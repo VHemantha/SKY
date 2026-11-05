@@ -1,0 +1,129 @@
+// Skylantic Holidays — database schema.
+// Local development uses SQLite. To move to PostgreSQL in production,
+// change `provider` to "postgresql" and point DATABASE_URL at your database.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Tour {
+  id              String        @id @default(cuid())
+  slug            String        @unique
+  title           String
+  // DAY_SAFARI | OVERNIGHT | PRIVATE | NIGHT_SAFARI | ROUND_TOUR
+  type            String
+  summary         String
+  description     String
+  // Human readable, e.g. "6 hours" or "3 days / 2 nights"
+  duration        String
+  price           Float?
+  // USD | EUR | GBP | LKR
+  currency        String        @default("USD")
+  // PER_PERSON | PER_GROUP | PER_JEEP
+  priceBasis      String        @default("PER_PERSON")
+  maxGroupSize    Int?
+  // Newline-separated lists, edited as plain text in the admin panel
+  highlights      String        @default("")
+  included        String        @default("")
+  excluded        String        @default("")
+  // One step per line, "Title :: details"
+  itinerary       String        @default("")
+  coverImage      String?
+  // JSON array of image URLs
+  gallery         String        @default("[]")
+  videoUrl        String?
+  featured        Boolean       @default(false)
+  published       Boolean       @default(true)
+  sortOrder       Int           @default(0)
+  metaTitle       String?
+  metaDescription String?
+  destinations    Destination[]
+  enquiries       Enquiry[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Destination {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  region      String   @default("")
+  summary     String
+  description String   @default("")
+  highlights  String   @default("")
+  bestTime    String   @default("")
+  image       String?
+  published   Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  tours       Tour[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Enquiry {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String   @default("")
+  country    String   @default("")
+  travelDate String   @default("")
+  adults     Int      @default(2)
+  children   Int      @default(0)
+  message    String   @default("")
+  // NEW | CONTACTED | CONFIRMED | CLOSED
+  status     String   @default("NEW")
+  notes      String   @default("")
+  tourId     String?
+  tour       Tour?    @relation(fields: [tourId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Faq {
+  id        String  @id @default(cuid())
+  question  String
+  answer    String
+  sortOrder Int     @default(0)
+  published Boolean @default(true)
+}
+
+// Editable long-form pages: about, why-us, terms, privacy
+model Page {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  body            String
+  metaDescription String   @default("")
+  updatedAt       DateTime @updatedAt
+}
+
+// Single row (id = 1) holding site-wide contact details and hero copy
+model SiteSettings {
+  id           Int    @id @default(1)
+  siteName     String @default("Skylantic Holidays")
+  tagline      String @default("Wildlife safaris & tailor-made holidays in Sri Lanka")
+  heroTitle    String @default("Meet Sri Lanka's wild side")
+  heroSubtitle String @default("")
+  heroImage    String @default("/images/yala-leopard.jpg")
+  phone        String @default("")
+  whatsapp     String @default("")
+  email        String @default("")
+  address      String @default("")
+  facebook     String @default("")
+  instagram    String @default("")
+  tripadvisor  String @default("")
+  credentials  String @default("")
+}

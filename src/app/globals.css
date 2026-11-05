@@ -1,26 +1,144 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  /* Deep jungle teal — primary brand colour */
+  --color-jungle-50: #eef7f5;
+  --color-jungle-100: #d5ebe6;
+  --color-jungle-200: #abd6cd;
+  --color-jungle-300: #78b9ab;
+  --color-jungle-400: #4a9887;
+  --color-jungle-500: #2f7c6c;
+  --color-jungle-600: #226357;
+  --color-jungle-700: #1d5048;
+  --color-jungle-800: #18403a;
+  --color-jungle-900: #112f2b;
+  --color-jungle-950: #0a1e1b;
+
+  /* Warm sand — page backgrounds and surfaces */
+  --color-sand-50: #fbf8f3;
+  --color-sand-100: #f5efe4;
+  --color-sand-200: #ebdfc9;
+  --color-sand-300: #dcc8a5;
+
+  /* Sunset amber — calls to action */
+  --color-sunset-400: #f3a35c;
+  --color-sunset-500: #e8843a;
+  --color-sunset-600: #cc6a22;
+  --color-sunset-700: #a8531a;
+
+  --color-ink: #17201e;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-sand-50);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-jungle-200);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-sunset-500);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@utility container-x {
+  @apply mx-auto w-full max-w-7xl px-5 sm:px-8;
+}
+
+@utility eyebrow {
+  @apply text-xs font-semibold tracking-[0.2em] text-sunset-600 uppercase;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition
+    disabled:cursor-not-allowed disabled:opacity-60;
+}
+@utility btn-primary {
+  @apply btn bg-sunset-500 text-white shadow-lg shadow-sunset-500/25 hover:bg-sunset-600;
+}
+@utility btn-dark {
+  @apply btn bg-jungle-900 text-white hover:bg-jungle-800;
+}
+@utility btn-ghost {
+  @apply btn border border-current/25 hover:bg-white/10;
+}
+
+@utility field {
+  @apply w-full rounded-xl border border-sand-300 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink/40
+    focus:border-jungle-500 focus:ring-2 focus:ring-jungle-500/20 focus:outline-none;
+}
+@utility label {
+  @apply mb-1.5 block text-sm font-medium text-ink/80;
+}
+
+@layer components {
+  /* 3D scroll reveal (see components/three-d/reveal.tsx) */
+  .reveal-3d {
+    transform-origin: 50% 100%;
+    transition:
+      opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .reveal-3d[data-reveal="hidden"] {
+    opacity: 0;
+    transform: perspective(1200px) rotateX(16deg) translate3d(0, 48px, -80px);
+  }
+  .reveal-3d[data-reveal="shown"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Long-form copy rendered by <RichText> */
+  .prose-sky {
+    @apply max-w-none text-[1.05rem] leading-relaxed text-ink/80;
+  }
+  .prose-sky > * + * {
+    @apply mt-5;
+  }
+  .prose-sky h2 {
+    @apply mt-12 font-display text-3xl font-semibold text-jungle-900;
+  }
+  .prose-sky h3 {
+    @apply mt-8 text-xl font-semibold text-jungle-900;
+  }
+  .prose-sky ul {
+    @apply space-y-2 pl-0;
+  }
+  .prose-sky li {
+    @apply relative pl-7;
+  }
+  .prose-sky li::before {
+    content: "";
+    @apply absolute top-[0.6em] left-1 h-2 w-2 rounded-full bg-sunset-500;
+  }
+  .prose-sky strong {
+    @apply font-semibold text-ink;
+  }
 }
