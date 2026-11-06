@@ -1,5 +1,4 @@
-import { readFile } from "node:fs/promises";
-import { resolveUpload } from "@/lib/uploads";
+import { readUpload } from "@/lib/uploads";
 
 const MIME: Record<string, string> = {
   jpg: "image/jpeg",
@@ -10,19 +9,14 @@ const MIME: Record<string, string> = {
 
 export async function GET(_request: Request, { params }: RouteContext<"/uploads/[name]">) {
   const { name } = await params;
-  const file = resolveUpload(name);
-  if (!file) return new Response("Not found", { status: 404 });
+  const data = await readUpload(name);
+  if (!data) return new Response("Not found", { status: 404 });
 
-  try {
-    const data = await readFile(file);
-    return new Response(new Uint8Array(data), {
-      headers: {
-        "Content-Type": MIME[name.split(".").pop()!],
-        // File names are random UUIDs, so they never change.
-        "Cache-Control": "public, max-age=31536000, immutable",
-      },
-    });
-  } catch {
-    return new Response("Not found", { status: 404 });
-  }
+  return new Response(data as Uint8Array<ArrayBuffer>, {
+    headers: {
+      "Content-Type": MIME[name.split(".").pop()!],
+      // File names are random UUIDs, so they never change.
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
+  });
 }

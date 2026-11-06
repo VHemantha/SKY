@@ -1,9 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { IMAGE_TYPES, MAX_UPLOAD_BYTES, UPLOAD_DIR } from "@/lib/uploads";
+import { IMAGE_TYPES, MAX_UPLOAD_BYTES, saveUpload } from "@/lib/uploads";
 
 // Magic bytes so a renamed file can't pretend to be an image.
 function looksLikeImage(buf: Buffer, type: string) {
@@ -44,9 +42,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "That file doesn't look like a valid image." }, { status: 400 });
   }
 
-  await mkdir(UPLOAD_DIR, { recursive: true });
   const name = `${randomUUID()}.${ext}`;
-  await writeFile(path.join(/*turbopackIgnore: true*/ UPLOAD_DIR, name), buf);
+  await saveUpload(name, buf, file.type);
 
   return NextResponse.json({ url: `/uploads/${name}` });
 }

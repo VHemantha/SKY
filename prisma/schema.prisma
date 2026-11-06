@@ -1,14 +1,18 @@
-// Skylantic Holidays — database schema.
-// Local development uses SQLite. To move to PostgreSQL in production,
-// change `provider` to "postgresql" and point DATABASE_URL at your database.
+// Skylantic Holidays — database schema (PostgreSQL, e.g. Netlify DB / Neon).
+// DATABASE_URL is the pooled connection used by the app at runtime;
+// DIRECT_URL is the direct (unpooled) connection used for migrations.
+// Locally both can point at the same database.
 
 generator client {
   provider = "prisma-client-js"
+  // "native" for your machine, rhel-openssl-3.0.x for Netlify Functions (AWS Lambda).
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model AdminUser {

@@ -2,17 +2,18 @@
 
 Travel agency website for Skylantic Holidays, Sri Lanka: wildlife safaris and tours, with an admin panel to manage tours, destinations, enquiries, FAQs, page text and contact details.
 
-**Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Prisma (SQLite locally, PostgreSQL-ready)
+**Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Prisma + PostgreSQL · hosted on Netlify (uploads in Netlify Blobs)
 
 ---
 
 ## Run it locally
 
-Requires Node.js 20.9 or newer.
+Requires Node.js 20.9 or newer and a PostgreSQL database. The easiest is a free [Neon](https://neon.tech) project: create a separate `dev` branch for local work so you never touch live data.
 
 ```bash
 npm install
-npx prisma migrate dev     # creates prisma/dev.db
+cp .env.example .env       # set DATABASE_URL / DIRECT_URL to a Postgres database
+npx prisma migrate deploy  # creates the tables
 npm run db:seed            # admin user + starter content
 npm run dev                # http://localhost:3000
 ```
@@ -30,11 +31,12 @@ npm rebuild
 
 | Variable | Purpose |
 | --- | --- |
-| `DATABASE_URL` | Database connection. `file:./dev.db` for SQLite. |
+| `DATABASE_URL` | Pooled Postgres connection used by the app (add `pgbouncer=true` when it goes through a pooler). |
+| `DIRECT_URL` | Direct Postgres connection used for migrations. Locally can equal `DATABASE_URL`. |
 | `SESSION_SECRET` | Random string (32+ chars) used to sign admin logins. |
 | `NEXT_PUBLIC_SITE_URL` | Live domain, e.g. `https://www.skylantic.lk`. Used for SEO tags, sitemap and canonical URLs. |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | First admin account, created by `npm run db:seed`. |
-| `UPLOAD_DIR` | Folder for uploaded photos (default `./storage/uploads`). |
+| `UPLOAD_DIR` | Local dev only: folder for uploaded photos (default `./storage/uploads`). On Netlify photos go to Netlify Blobs automatically. |
 
 Generate a secret: `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`
 
@@ -52,28 +54,31 @@ Generate a secret: `node -e "console.log(require('crypto').randomBytes(32).toStr
 
 Saving in the admin updates the live site immediately.
 
-## Hosting
+## Deploying to Netlify
 
-The site needs a **Node.js host**, because the admin panel writes to a database and stores uploaded photos.
+The repo is ready for Netlify: [`netlify.toml`](netlify.toml) runs database migrations, seeds starter content on the first deploy, and builds the site. Uploaded photos are stored in **Netlify Blobs** (no setup needed).
 
-### Option A — VPS (recommended to start; simplest, about US$5–6/month)
-e.g. DigitalOcean, Hetzner, Vultr or Hostinger VPS. SQLite and uploads work as-is.
+1. **Create the database.** Make a free project at [neon.tech](https://neon.tech) (or add the *Neon / Netlify DB* extension in Netlify). From the Neon *Connect* dialog copy:
+   - the **pooled** connection string → `DATABASE_URL`, and add `&pgbouncer=true` to the end
+   - the **direct** (non-pooled) connection string → `DIRECT_URL`
+2. **Create the site.** Push this repo to GitHub, then in Netlify: *Add new site → Import an existing project* → pick the repo. Build settings are read from `netlify.toml`.
+3. **Set environment variables** (*Site configuration → Environment variables*):
 
-```bash
-git clone <repo> && cd skylantic-web
-cp .env.example .env           # fill in real values
-npm ci
-npx prisma migrate deploy
-npm run db:seed
-npm run build
-npx pm2 start "npm start" --name skylantic
-```
-Put Nginx or Caddy in front for HTTPS, and back up `prisma/dev.db` and `storage/uploads/` regularly.
+   | Variable | Value |
+   | --- | --- |
+   | `DATABASE_URL` | pooled URL from step 1 (with `pgbouncer=true`) |
+   | `DIRECT_URL` | direct URL from step 1 |
+   | `SESSION_SECRET` | output of the generate command above |
+   | `NEXT_PUBLIC_SITE_URL` | `https://<your-site>.netlify.app` for now, your domain later |
+   | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first admin login (8+ chars) |
 
-### Option B — Vercel / serverless
-Serverless hosts have no permanent disk, so:
-1. Switch the database to PostgreSQL (e.g. Neon or Supabase): in `prisma/schema.prisma` set `provider = "postgresql"`, update `DATABASE_URL`, then delete `prisma/migrations` and run `npx prisma migrate dev --name init`.
-2. Move photo uploads to object storage (e.g. Cloudinary, S3 or Vercel Blob) by changing `src/app/api/admin/upload/route.ts`.
+4. **Deploy.** The first build creates the tables, the admin account and the starter tours/pages.
+5. **After the first deploy:** sign in at `/admin`, change the password under **Account**, then **delete `ADMIN_EMAIL` and `ADMIN_PASSWORD`** from Netlify so seeding stops running on later builds.
+6. **Custom domain:** *Domain management → Add a domain*, then update `NEXT_PUBLIC_SITE_URL` and redeploy.
+
+Changing `NEXT_PUBLIC_SITE_URL` always needs a redeploy (*Deploys → Trigger deploy*), because it's built into the pages.
+
+To try the Netlify setup locally (including Blobs): `npm i -g netlify-cli`, `netlify link`, `netlify dev`.
 
 ### Domain & email
 - Register a domain such as `skylantic.lk` (via LK Domain Registry) or `skylanticholidays.com`.
@@ -88,7 +93,6 @@ Serverless hosts have no permanent disk, so:
 - [ ] Replace the 6 sample tours with real tours, prices and photos
 - [ ] Have **Terms** and **Privacy** reviewed by a legal adviser
 - [ ] Replace the placeholder photos with your own (then update `/photo-credits`)
-- [ ] Replace the text logo in `src/components/logo.tsx` and the icon in `src/app/icon.svg` with the final logo
 - [ ] Change the admin password
 
 ## Project structure
