@@ -8,6 +8,7 @@ import { z } from "zod";
 import { createSession, deleteSession, requireAdmin } from "@/lib/auth";
 import { CURRENCIES, ENQUIRY_STATUS, PAGE_SLUGS, PRICE_BASIS, TOUR_TYPES } from "@/lib/constants";
 import { db } from "@/lib/db";
+import { heroSlidesSchema } from "@/lib/hero-slides";
 import { slugify } from "@/lib/utils";
 
 export type FormState = { error?: string; success?: string };
@@ -19,6 +20,10 @@ function refreshSite() {
 
 function firstError(error: z.ZodError) {
   const issue = error.issues[0];
+  if (issue.path[0] === "heroSlides") {
+    const n = typeof issue.path[1] === "number" ? ` ${issue.path[1] + 1}` : "s";
+    return `Slider photo${n}: ${issue.message}`;
+  }
   const field = issue.path.join(".");
   return field ? `${field}: ${issue.message}` : issue.message;
 }
@@ -301,7 +306,17 @@ const settingsSchema = z.object({
   tagline: text(200),
   heroTitle: z.string().trim().min(2).max(120),
   heroSubtitle: text(300),
-  heroImage: z.string().trim().min(1, "is required").max(500),
+  heroSlides: z
+    .string()
+    .transform((v, ctx) => {
+      try {
+        return JSON.parse(v) as unknown;
+      } catch {
+        ctx.addIssue({ code: "custom", message: "could not be read" });
+        return z.NEVER;
+      }
+    })
+    .pipe(heroSlidesSchema),
   phone: text(40),
   whatsapp: text(40),
   email: z.union([z.literal(""), z.email()]).default(""),
@@ -316,7 +331,10 @@ export async function saveSettings(_prev: FormState, formData: FormData): Promis
   await requireAdmin();
   const parsed = settingsSchema.safeParse(formObject(formData));
   if (!parsed.success) return { error: firstError(parsed.error) };
-  await db.siteSettings.upsert({ where: { id: 1 }, update: parsed.data, create: { id: 1, ...parsed.data } });
+  const { heroSlides, ...rest } = parsed.data;
+  // The first slide doubles as the site's share image in search results and social previews.
+  const data = { ...rest, heroSlides: JSON.stringify(heroSlides), heroImage: heroSlides[0].src };
+  await db.siteSettings.upsert({ where: { id: 1 }, update: data, create: { id: 1, ...data } });
   refreshSite();
   return { success: "Settings saved." };
 }

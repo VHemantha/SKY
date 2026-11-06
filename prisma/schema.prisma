@@ -118,6 +118,8 @@ model SiteSettings {
   heroTitle    String @default("Meet Sri Lanka's wild side")
   heroSubtitle String @default("")
   heroImage    String @default("/images/yala-leopard.jpg")
+  // JSON array of { src, alt, caption } for the home page slider. Empty = built-in defaults.
+  heroSlides   String @default("")
   phone        String @default("")
   whatsapp     String @default("")
   email        String @default("")

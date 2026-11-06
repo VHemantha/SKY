@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, Trash2, ArrowLeft, ArrowRight } from "lucide-react";
 
-async function upload(file: File): Promise<string> {
+export async function upload(file: File): Promise<string> {
   const body = new FormData();
   body.append("file", file);
   const res = await fetch("/api/admin/upload", { method: "POST", body });
@@ -12,7 +12,7 @@ async function upload(file: File): Promise<string> {
   return json.url as string;
 }
 
-const ACCEPT = "image/jpeg,image/png,image/webp,image/avif";
+export const ACCEPT = "image/jpeg,image/png,image/webp,image/avif";
 
 /** Single image picker. Stores the uploaded URL in a hidden input called `name`. */
 export function ImageField({ name, label, defaultValue, hint }: { name: string; label: string; defaultValue?: string | null; hint?: string }) {

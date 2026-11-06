@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { getSettings } from "@/lib/data";
 import { saveSettings } from "../../actions";
 import { ActionForm } from "@/components/admin/action-form";
-import { ImageField } from "@/components/admin/image-field";
+import { HeroSlidesField } from "@/components/admin/hero-slides-field";
+import { parseHeroSlides } from "@/lib/hero-slides";
 import { AdminHeader, Card, CardTitle, Input, Textarea } from "@/components/admin/ui";
 
 export const metadata: Metadata = { title: "Site settings" };
@@ -50,7 +51,7 @@ export default async function SettingsPage() {
           <div className="grid gap-5">
             <Input label="Headline" name="heroTitle" required defaultValue={s.heroTitle} />
             <Textarea label="Sub-headline" name="heroSubtitle" rows={2} defaultValue={s.heroSubtitle} />
-            <ImageField name="heroImage" label="Hero photo" defaultValue={s.heroImage} hint="A wide, high-quality landscape photo (at least 1920px wide)." />
+            <HeroSlidesField name="heroSlides" defaultValue={parseHeroSlides(s.heroSlides)} />
           </div>
         </Card>
       </ActionForm>

@@ -7,21 +7,26 @@ import { getFaqs, getFeaturedTours, getPublishedDestinations, getSettings } from
 import { TOUR_TYPES } from "@/lib/constants";
 import { whatsappLink } from "@/lib/utils";
 import { HeroScene } from "@/components/three-d/hero-scene";
+import { parseHeroSlides } from "@/lib/hero-slides";
 import { Globe } from "@/components/three-d/globe";
 import { PhotoCarousel3D } from "@/components/three-d/photo-carousel-3d";
 import { Reveal } from "@/components/three-d/reveal";
 
+// 3D photo ring ("Moments from the island"). Photos live in public/images/ring/.
 const MOMENTS = [
-  { src: "/images/yala-leopard.jpg", caption: "Leopard, Yala" },
-  { src: "/images/minneriya-gathering.jpg", caption: "The Gathering, Minneriya" },
-  { src: "/images/ella-nine-arch.jpg", caption: "Nine Arch Bridge, Ella" },
-  { src: "/images/tea-nuwara-eliya.jpg", caption: "Tea country, Nuwara Eliya" },
-  { src: "/images/sigiriya.jpg", caption: "Sigiriya Rock" },
-  { src: "/images/mirissa.jpg", caption: "Mirissa coast" },
-  { src: "/images/galle-fort.jpg", caption: "Galle Fort" },
-  { src: "/images/wilpattu-sambar.jpg", caption: "Sambar deer, Wilpattu" },
-  { src: "/images/horton-plains.jpg", caption: "Horton Plains" },
-  { src: "/images/kumana.jpg", caption: "Kumana wetlands" },
+  { src: "/images/ring/leopard.jpg", caption: "Sri Lankan leopard" },
+  { src: "/images/ring/elephant.jpg", caption: "Asian elephant up close" },
+  { src: "/images/ring/nine-arch-bridge-ella.jpg", caption: "Nine Arch Bridge, Ella" },
+  { src: "/images/ring/macaque.jpg", caption: "Toque macaque" },
+  { src: "/images/ring/sigiriya-from-pidurangala.jpg", caption: "Sigiriya from Pidurangala" },
+  { src: "/images/ring/koggala-stilt-fishing.jpg", caption: "Stilt fishermen, Koggala" },
+  { src: "/images/ring/crocodile.jpg", caption: "Crocodile in the shallows" },
+  { src: "/images/ring/peacock.jpg", caption: "Indian peafowl" },
+  { src: "/images/ring/forest-lizard.jpg", caption: "Green forest lizard" },
+  { src: "/images/ring/hill-country-train.jpg", caption: "Hill country by train" },
+  { src: "/images/ring/bird-of-prey.jpg", caption: "Bird of prey on a treetop" },
+  { src: "/images/ring/sigiriya-summit.jpg", caption: "On top of Sigiriya" },
+  { src: "/images/ring/jungle-sunset.jpg", caption: "Sunset over the jungle" },
 ];
 
 export default async function HomePage() {
@@ -36,7 +41,7 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <HeroScene image={settings.heroImage} alt="Wildlife in Sri Lanka">
+      <HeroScene slides={parseHeroSlides(settings.heroSlides)}>
         <div className="container-x">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-[0.18em] uppercase backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-sunset-400" /> Sri Lanka · Safaris & holidays

@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Development only: lets phones and other devices on the home/office Wi-Fi
+  // (e.g. http://192.168.1.10:3000) load the dev scripts. Ignored in production.
+  allowedDevOrigins: ["192.168.*.*", "10.*.*.*"],
   // Admin-edited content is refreshed with revalidatePath() after each save,
   // so the classic caching model is enough for this site.
   turbopack: {
