@@ -8,6 +8,7 @@ import { z } from "zod";
 import { createSession, deleteSession, requireAdmin } from "@/lib/auth";
 import { CURRENCIES, ENQUIRY_STATUS, PAGE_SLUGS, PRICE_BASIS, TOUR_TYPES } from "@/lib/constants";
 import { db } from "@/lib/db";
+import { seedAdmin, seedContent } from "@/lib/seed";
 import { heroSlidesSchema } from "@/lib/hero-slides";
 import { slugify } from "@/lib/utils";
 
@@ -77,6 +78,15 @@ export async function login(_prev: FormState, formData: FormData): Promise<FormS
 
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
+  // First login on a fresh database: create the admin from ADMIN_EMAIL / ADMIN_PASSWORD.
+  if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD && (await db.adminUser.count()) === 0) {
+    try {
+      await seedAdmin(db, process.env.ADMIN_EMAIL, process.env.ADMIN_PASSWORD);
+      await seedContent(db);
+    } catch (e) {
+      console.error("Creating the first admin failed", e);
+    }
+  }
   const user = email ? await db.adminUser.findUnique({ where: { email } }) : null;
   // Compare against a dummy hash when the user doesn't exist to keep timing similar.
   const ok = await bcrypt.compare(password, user?.passwordHash ?? "$2b$12$27BagE7JEhWSV0DN6GUW7OpSE/9ZQWggdWQ2U.3CcMmdv.sst0aPK");

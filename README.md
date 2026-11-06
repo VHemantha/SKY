@@ -58,16 +58,14 @@ Saving in the admin updates the live site immediately.
 
 The repo is ready for Netlify: [`netlify.toml`](netlify.toml) runs database migrations, seeds starter content on the first deploy, and builds the site. Uploaded photos are stored in **Netlify Blobs** (no setup needed).
 
-1. **Create the database.** Make a free project at [neon.tech](https://neon.tech) (or add the *Neon / Netlify DB* extension in Netlify). From the Neon *Connect* dialog copy:
-   - the **pooled** connection string → `DATABASE_URL`, and add `&pgbouncer=true` to the end
-   - the **direct** (non-pooled) connection string → `DIRECT_URL`
+1. **Database.** By default the site uses **Netlify Database** — no connection strings needed. Netlify applies the SQL in `netlify/database/migrations/` just before each deploy goes live, starter content is added on the first page request, and the admin account is created on the first login from `ADMIN_EMAIL` / `ADMIN_PASSWORD`. When you change `prisma/schema.prisma`, run `npx prisma migrate dev` locally and copy the new migration folder into `netlify/database/migrations/` too.
+   To use an external Postgres (e.g. [neon.tech](https://neon.tech)) instead, set the **pooled** connection string (with `&pgbouncer=true`) as `DATABASE_URL` and the **direct** one as `DIRECT_URL`; the build then runs `prisma migrate deploy` and the seed itself.
 2. **Create the site.** Push this repo to GitHub, then in Netlify: *Add new site → Import an existing project* → pick the repo. Build settings are read from `netlify.toml`.
 3. **Set environment variables** (*Site configuration → Environment variables*):
 
    | Variable | Value |
    | --- | --- |
-   | `DATABASE_URL` | pooled URL from step 1 (with `pgbouncer=true`) |
-   | `DIRECT_URL` | direct URL from step 1 |
+   | `DATABASE_URL` / `DIRECT_URL` | only for an external Postgres (see step 1) |
    | `SESSION_SECRET` | output of the generate command above |
    | `NEXT_PUBLIC_SITE_URL` | `https://<your-site>.netlify.app` for now, your domain later |
    | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first admin login (8+ chars) |

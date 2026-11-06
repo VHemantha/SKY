@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Check, Clock, MapPin, Tag, Users, X } from "lucide-react";
 import { EnquiryForm } from "@/components/enquiry-form";
 import { JsonLd } from "@/components/json-ld";
-import { getPublishedTours, getSettings, getTourBySlug } from "@/lib/data";
+import { getSettings, getTourBySlug } from "@/lib/data";
 import {
   formatPrice,
   lines,
@@ -17,11 +17,6 @@ import {
   videoEmbedUrl,
   whatsappLink,
 } from "@/lib/utils";
-
-export async function generateStaticParams() {
-  const tours = await getPublishedTours();
-  return tours.map((t) => ({ slug: t.slug }));
-}
 
 export async function generateMetadata({ params }: PageProps<"/tours/[slug]">): Promise<Metadata> {
   const { slug } = await params;

@@ -5,13 +5,8 @@ import { CalendarDays, Check } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { TourCard } from "@/components/tour-card";
 import { JsonLd } from "@/components/json-ld";
-import { getDestinationBySlug, getPublishedDestinations } from "@/lib/data";
+import { getDestinationBySlug } from "@/lib/data";
 import { lines, siteUrl } from "@/lib/utils";
-
-export async function generateStaticParams() {
-  const destinations = await getPublishedDestinations();
-  return destinations.map((d) => ({ slug: d.slug }));
-}
 
 export async function generateMetadata({ params }: PageProps<"/destinations/[slug]">): Promise<Metadata> {
   const { slug } = await params;

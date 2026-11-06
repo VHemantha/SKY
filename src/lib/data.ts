@@ -1,8 +1,17 @@
 import "server-only";
 import { cache } from "react";
 import { db } from "./db";
+import { seedContent } from "./seed";
 
 export const getSettings = cache(async () => {
+  const existing = await db.siteSettings.findUnique({ where: { id: 1 } });
+  if (existing) return existing;
+  // First request on a fresh database: add the starter tours, destinations and pages.
+  try {
+    await seedContent(db);
+  } catch (e) {
+    console.error("Seeding starter content failed", e);
+  }
   return (
     (await db.siteSettings.findUnique({ where: { id: 1 } })) ??
     (await db.siteSettings.create({ data: { id: 1 } }))
