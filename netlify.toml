@@ -1,14 +1,23 @@
 # Netlify build settings for Skylantic Holidays.
 # Netlify detects Next.js and adds its Next.js runtime automatically.
 # Required environment variables (Site configuration → Environment variables):
-#   DATABASE_URL, DIRECT_URL, SESSION_SECRET, NEXT_PUBLIC_SITE_URL
-# Optional, first deploy only: ADMIN_EMAIL, ADMIN_PASSWORD (creates the admin + starter content).
+#   SESSION_SECRET, NEXT_PUBLIC_SITE_URL
+# Optional: ADMIN_EMAIL, ADMIN_PASSWORD (the first admin, created on first login).
+#
+# Database:
+# - Netlify Database (default): no variables needed. Netlify applies the SQL in
+#   netlify/database/migrations just before each deploy goes live; starter content
+#   is added on the first request.
+# - External Postgres: set DATABASE_URL (and DIRECT_URL) and the build runs
+#   `prisma migrate deploy` + seed itself.
 
 [build]
-  # 1. Apply database migrations  2. Seed (only while ADMIN_EMAIL is set; never overwrites)  3. Build
   command = """
-    npx prisma migrate deploy && \
-    if [ -n "$ADMIN_EMAIL" ]; then npm run db:seed; fi && \
+    if [ -n "$DATABASE_URL" ]; then \
+      export DIRECT_URL="${DIRECT_URL:-$DATABASE_URL}" && \
+      npx prisma migrate deploy && \
+      if [ -n "$ADMIN_EMAIL" ]; then npm run db:seed; fi; \
+    fi && \
     npm run build
   """
   publish = ".next"
