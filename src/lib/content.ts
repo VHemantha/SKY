@@ -101,20 +101,40 @@ let cached: { mtimeMs: number; content: Content } | null = null;
 // committed file and never touch DATA_DIR.
 const IS_BUILD = process.env.NEXT_PHASE === "phase-production-build";
 
-async function ensureLiveFile() {
-  if (IS_BUILD) return;
+// The file actually used at runtime. Falls back to the committed file when
+// DATA_DIR can't be created (e.g. Render without a disk attached), so the site
+// keeps working instead of crashing — edits then last only until the next restart.
+let liveFile = IS_BUILD ? DEFAULT_FILE : LIVE_FILE;
+let ready: Promise<void> | null = null;
+
+async function prepareLiveFile() {
   try {
     await stat(LIVE_FILE);
   } catch {
-    await mkdir(DATA_DIR, { recursive: true });
-    await copyFile(DEFAULT_FILE, LIVE_FILE);
+    try {
+      await mkdir(DATA_DIR, { recursive: true });
+      await copyFile(DEFAULT_FILE, LIVE_FILE);
+    } catch (error) {
+      console.warn(
+        `[content] Can't use DATA_DIR "${DATA_DIR}" (${(error as NodeJS.ErrnoException).code}). ` +
+          `Using ${DEFAULT_FILE} instead — admin edits will be lost on restart. ` +
+          `Attach a persistent disk at ${DATA_DIR}, or unset DATA_DIR.`,
+      );
+      liveFile = DEFAULT_FILE;
+    }
   }
+}
+
+function ensureLiveFile() {
+  if (IS_BUILD) return Promise.resolve();
+  ready ??= prepareLiveFile();
+  return ready;
 }
 
 /** Returns the current content. Re-reads the file when it changes on disk. */
 export async function readContent(): Promise<Content> {
   await ensureLiveFile();
-  const file = IS_BUILD ? DEFAULT_FILE : LIVE_FILE;
+  const file = liveFile;
   const { mtimeMs } = await stat(file);
   if (cached && cached.mtimeMs === mtimeMs) return cached.content;
   const content = JSON.parse(await readFile(file, "utf8"), revive) as Content;
@@ -130,9 +150,9 @@ export function updateContent<T>(change: (content: Content) => T): Promise<T> {
   const run = queue.then(async () => {
     const content = structuredClone(await readContent());
     const result = change(content);
-    const tmp = `${LIVE_FILE}.${process.pid}.tmp`;
+    const tmp = `${liveFile}.${process.pid}.tmp`;
     await writeFile(tmp, JSON.stringify(content, null, 2) + "\n");
-    await rename(tmp, LIVE_FILE);
+    await rename(tmp, liveFile);
     cached = null;
     return result;
   });
