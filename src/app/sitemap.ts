@@ -1,15 +1,14 @@
 import type { MetadataRoute } from "next";
-import { db } from "@/lib/db";
+import { readContent } from "@/lib/content";
 import { siteUrl } from "@/lib/utils";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [tours, destinations, pages] = await Promise.all([
-    db.tour.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
-    db.destination.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
-    db.page.findMany({ select: { slug: true, updatedAt: true } }),
-  ]);
+  const content = await readContent();
+  const tours = content.tours.filter((t) => t.published);
+  const destinations = content.destinations.filter((d) => d.published);
+  const { pages } = content;
 
   return [
     { url: siteUrl("/"), changeFrequency: "weekly", priority: 1 },

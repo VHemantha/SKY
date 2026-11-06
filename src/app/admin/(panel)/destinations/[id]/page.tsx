@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Trash2 } from "lucide-react";
-import { db } from "@/lib/db";
+import { readContent } from "@/lib/content";
 import { deleteDestination } from "../../../actions";
 import { AdminHeader } from "@/components/admin/ui";
 import { ConfirmForm } from "@/components/admin/action-form";
@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Edit destination" };
 
 export default async function EditDestinationPage({ params }: PageProps<"/admin/destinations/[id]">) {
   const { id } = await params;
-  const destination = await db.destination.findUnique({ where: { id } });
+  const destination = (await readContent()).destinations.find((d) => d.id === id);
   if (!destination) notFound();
   return (
     <>

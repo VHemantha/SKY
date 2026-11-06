@@ -9,7 +9,7 @@ export function LoginForm() {
   return (
     <form
       action={action}
-      // Submit manually so a failed attempt doesn't clear the email field.
+      // Submit manually so a failed attempt doesn't clear the username field.
       onSubmit={(e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
@@ -18,8 +18,8 @@ export function LoginForm() {
       className="space-y-4"
     >
       <div>
-        <label htmlFor="email" className="label">Email</label>
-        <input id="email" name="email" type="email" required autoComplete="username" className="field" />
+        <label htmlFor="username" className="label">Username</label>
+        <input id="username" name="username" type="text" required autoComplete="username" autoCapitalize="none" spellCheck={false} className="field" />
       </div>
       <div>
         <label htmlFor="password" className="label">Password</label>

@@ -1,73 +1,77 @@
 import "server-only";
 import { cache } from "react";
-import { db } from "./db";
+import { readContent, type Destination, type Tour } from "./content";
 
-export const getSettings = cache(async () => {
-  return (
-    (await db.siteSettings.findUnique({ where: { id: 1 } })) ??
-    (await db.siteSettings.create({ data: { id: 1 } }))
-  );
-});
+export const getSettings = cache(async () => (await readContent()).settings);
+
+type DestinationRef = { name: string; slug: string };
+export type TourWithDestinations = Tour & { destinations: DestinationRef[] };
+
+const byFeatured = (a: Tour, b: Tour) =>
+  Number(b.featured) - Number(a.featured) ||
+  a.sortOrder - b.sortOrder ||
+  b.createdAt.getTime() - a.createdAt.getTime();
+
+function withDestinations(tour: Tour, destinations: Destination[]): TourWithDestinations {
+  return {
+    ...tour,
+    destinations: destinations
+      .filter((d) => tour.destinationIds.includes(d.id))
+      .map((d) => ({ name: d.name, slug: d.slug })),
+  };
+}
 
 export type PublicTourFilter = { type?: string; destination?: string };
 
 export const getPublishedTours = cache(async (filter: PublicTourFilter = {}) => {
-  return db.tour.findMany({
-    where: {
-      published: true,
-      ...(filter.type ? { type: filter.type } : {}),
-      ...(filter.destination
-        ? { destinations: { some: { slug: filter.destination } } }
-        : {}),
-    },
-    include: { destinations: { select: { name: true, slug: true } } },
-    orderBy: [{ featured: "desc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
-  });
+  const { tours, destinations } = await readContent();
+  return tours
+    .filter((t) => t.published && (!filter.type || t.type === filter.type))
+    .map((t) => withDestinations(t, destinations))
+    .filter((t) => !filter.destination || t.destinations.some((d) => d.slug === filter.destination))
+    .sort(byFeatured);
 });
 
-export const getFeaturedTours = cache(async (take = 6) => {
-  return db.tour.findMany({
-    where: { published: true },
-    include: { destinations: { select: { name: true, slug: true } } },
-    orderBy: [{ featured: "desc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
-    take,
-  });
-});
+export const getFeaturedTours = cache(async (take = 6) => (await getPublishedTours()).slice(0, take));
 
 export const getTourBySlug = cache(async (slug: string) => {
-  return db.tour.findFirst({
-    where: { slug, published: true },
-    include: { destinations: { where: { published: true } } },
-  });
+  const { tours, destinations } = await readContent();
+  const tour = tours.find((t) => t.slug === slug && t.published);
+  if (!tour) return null;
+  return {
+    ...tour,
+    destinations: destinations.filter((d) => d.published && tour.destinationIds.includes(d.id)),
+  };
 });
 
+const bySortThenName = (a: Destination, b: Destination) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name);
+
 export const getPublishedDestinations = cache(async () => {
-  return db.destination.findMany({
-    where: { published: true },
-    include: { _count: { select: { tours: { where: { published: true } } } } },
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-  });
+  const { tours, destinations } = await readContent();
+  return destinations
+    .filter((d) => d.published)
+    .sort(bySortThenName)
+    .map((d) => ({
+      ...d,
+      _count: { tours: tours.filter((t) => t.published && t.destinationIds.includes(d.id)).length },
+    }));
 });
 
 export const getDestinationBySlug = cache(async (slug: string) => {
-  return db.destination.findFirst({
-    where: { slug, published: true },
-    include: {
-      tours: {
-        where: { published: true },
-        include: { destinations: { select: { name: true, slug: true } } },
-        orderBy: [{ featured: "desc" }, { sortOrder: "asc" }],
-      },
-    },
-  });
+  const { tours, destinations } = await readContent();
+  const destination = destinations.find((d) => d.slug === slug && d.published);
+  if (!destination) return null;
+  return {
+    ...destination,
+    tours: tours
+      .filter((t) => t.published && t.destinationIds.includes(destination.id))
+      .map((t) => withDestinations(t, destinations))
+      .sort(byFeatured),
+  };
 });
 
-export const getFaqs = cache(async () => {
-  return db.faq.findMany({ where: { published: true }, orderBy: { sortOrder: "asc" } });
-});
+export const getFaqs = cache(async () =>
+  (await readContent()).faqs.filter((f) => f.published).sort((a, b) => a.sortOrder - b.sortOrder),
+);
 
-export const getPage = cache(async (slug: string) => {
-  return db.page.findUnique({ where: { slug } });
-});
-
-export type TourWithDestinations = Awaited<ReturnType<typeof getPublishedTours>>[number];
+export const getPage = cache(async (slug: string) => (await readContent()).pages.find((p) => p.slug === slug) ?? null);

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Destination } from "@prisma/client";
+import type { Destination } from "@/lib/content";
 import { saveDestination } from "../../actions";
 import { ActionForm } from "@/components/admin/action-form";
 import { ImageField } from "@/components/admin/image-field";

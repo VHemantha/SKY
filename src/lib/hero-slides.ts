@@ -29,11 +29,11 @@ export const heroSlidesSchema = z
   .min(1, "add at least one photo")
   .max(MAX_HERO_SLIDES, `use ${MAX_HERO_SLIDES} photos or fewer`);
 
-/** Reads the JSON stored in SiteSettings.heroSlides, falling back to the defaults. */
-export function parseHeroSlides(json: string | null | undefined): HeroSlide[] {
-  if (!json) return DEFAULT_HERO_SLIDES;
+/** Reads the saved hero slides, falling back to the defaults when none are set. */
+export function parseHeroSlides(input: HeroSlide[] | string | null | undefined): HeroSlide[] {
+  if (!input || input.length === 0) return DEFAULT_HERO_SLIDES;
   try {
-    const parsed = heroSlidesSchema.safeParse(JSON.parse(json));
+    const parsed = heroSlidesSchema.safeParse(typeof input === "string" ? JSON.parse(input) : input);
     return parsed.success ? parsed.data : DEFAULT_HERO_SLIDES;
   } catch {
     return DEFAULT_HERO_SLIDES;

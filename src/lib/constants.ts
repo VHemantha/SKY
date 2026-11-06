@@ -16,13 +16,6 @@ export const PRICE_BASIS = {
   PER_JEEP: "per jeep",
 } as const;
 
-export const ENQUIRY_STATUS = {
-  NEW: "New",
-  CONTACTED: "Contacted",
-  CONFIRMED: "Confirmed",
-  CLOSED: "Closed",
-} as const;
-
 export const PAGE_SLUGS = {
   about: "About us",
   "why-choose-us": "Why choose us",

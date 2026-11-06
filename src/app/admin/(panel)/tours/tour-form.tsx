@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Destination, Tour } from "@prisma/client";
+import type { Destination, Tour } from "@/lib/content";
 import { CURRENCIES, PRICE_BASIS, TOUR_TYPES } from "@/lib/constants";
 import { parseGallery } from "@/lib/utils";
 import { saveTour } from "../../actions";
@@ -8,12 +8,12 @@ import { GalleryField, ImageField } from "@/components/admin/image-field";
 import { Card, CardTitle, Input, Select, Textarea, Toggle } from "@/components/admin/ui";
 
 type Props = {
-  tour?: Tour & { destinations: Pick<Destination, "id">[] };
+  tour?: Tour;
   destinations: Pick<Destination, "id" | "name">[];
 };
 
 export function TourForm({ tour, destinations }: Props) {
-  const selected = new Set(tour?.destinations.map((d) => d.id));
+  const selected = new Set(tour?.destinationIds);
   return (
     <ActionForm
       action={saveTour}

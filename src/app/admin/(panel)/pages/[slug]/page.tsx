@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { db } from "@/lib/db";
+import { readContent } from "@/lib/content";
 import { PAGE_SLUGS } from "@/lib/constants";
 import { savePage } from "../../../actions";
 import { ActionForm } from "@/components/admin/action-form";
@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Edit page" };
 export default async function EditPagePage({ params }: PageProps<"/admin/pages/[slug]">) {
   const { slug } = await params;
   if (!(slug in PAGE_SLUGS)) notFound();
-  const page = await db.page.findUnique({ where: { slug } });
+  const page = (await readContent()).pages.find((p) => p.slug === slug);
   const label = PAGE_SLUGS[slug as keyof typeof PAGE_SLUGS];
 
   return (

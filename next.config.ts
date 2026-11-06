@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     localPatterns: [{ pathname: "/images/**" }, { pathname: "/uploads/**" }],
   },
-  serverExternalPackages: ["@prisma/client", "bcryptjs"],
+  serverExternalPackages: ["bcryptjs"],
   async headers() {
     return [
       {

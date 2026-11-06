@@ -6,8 +6,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createSession, deleteSession, requireAdmin } from "@/lib/auth";
-import { CURRENCIES, ENQUIRY_STATUS, PAGE_SLUGS, PRICE_BASIS, TOUR_TYPES } from "@/lib/constants";
-import { db } from "@/lib/db";
+import { ADMIN_DISPLAY_NAME, ADMIN_PASSWORD_HASH, ADMIN_USERNAME } from "@/lib/admin-credentials";
+import { CURRENCIES, PAGE_SLUGS, PRICE_BASIS, TOUR_TYPES } from "@/lib/constants";
+import { newId, updateContent } from "@/lib/content";
 import { heroSlidesSchema } from "@/lib/hero-slides";
 import { slugify } from "@/lib/utils";
 
@@ -50,14 +51,11 @@ function formObject(formData: FormData) {
   return obj;
 }
 
-async function uniqueSlug(base: string, table: "tour" | "destination", ignoreId?: string) {
+function uniqueSlug(base: string, items: { id: string; slug: string }[], ignoreId?: string) {
   const root = slugify(base) || "item";
   let slug = root;
   for (let i = 2; ; i++) {
-    const existing =
-      table === "tour"
-        ? await db.tour.findUnique({ where: { slug }, select: { id: true } })
-        : await db.destination.findUnique({ where: { slug }, select: { id: true } });
+    const existing = items.find((item) => item.slug === slug);
     if (!existing || existing.id === ignoreId) return slug;
     slug = `${root}-${i}`;
   }
@@ -75,42 +73,26 @@ export async function login(_prev: FormState, formData: FormData): Promise<FormS
     return { error: "Too many attempts. Please wait 15 minutes and try again." };
   }
 
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const username = String(formData.get("username") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
-  const user = email ? await db.adminUser.findUnique({ where: { email } }) : null;
-  // Compare against a dummy hash when the user doesn't exist to keep timing similar.
-  const ok = await bcrypt.compare(password, user?.passwordHash ?? "$2b$12$27BagE7JEhWSV0DN6GUW7OpSE/9ZQWggdWQ2U.3CcMmdv.sst0aPK");
+  // Always run bcrypt so a wrong username takes as long as a wrong password.
+  const passwordOk = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+  const ok = passwordOk && username === ADMIN_USERNAME;
 
-  if (!user || !ok) {
+  if (!ok) {
     const next = attempt && attempt.until > Date.now() ? attempt.count + 1 : 1;
     loginAttempts.set(ip, { count: next, until: Date.now() + 15 * 60_000 });
-    return { error: "Incorrect email or password." };
+    return { error: "Incorrect username or password." };
   }
 
   loginAttempts.delete(ip);
-  await createSession({ userId: user.id, email: user.email, name: user.name });
+  await createSession({ username: ADMIN_USERNAME, name: ADMIN_DISPLAY_NAME });
   redirect("/admin");
 }
 
 export async function logout() {
   await deleteSession();
   redirect("/admin/login");
-}
-
-export async function changePassword(_prev: FormState, formData: FormData): Promise<FormState> {
-  const session = await requireAdmin();
-  const current = String(formData.get("current") ?? "");
-  const next = String(formData.get("next") ?? "");
-  const confirm = String(formData.get("confirm") ?? "");
-  if (next.length < 10) return { error: "New password must be at least 10 characters." };
-  if (next !== confirm) return { error: "New passwords don't match." };
-
-  const user = await db.adminUser.findUnique({ where: { id: session.userId } });
-  if (!user || !(await bcrypt.compare(current, user.passwordHash))) {
-    return { error: "Current password is incorrect." };
-  }
-  await db.adminUser.update({ where: { id: user.id }, data: { passwordHash: await bcrypt.hash(next, 12) } });
-  return { success: "Password updated." };
 }
 
 // ───────────────────────────── Tours ─────────────────────────────
@@ -161,31 +143,38 @@ export async function saveTour(_prev: FormState, formData: FormData): Promise<Fo
     return { error: "Gallery data is invalid." };
   }
 
-  const destinationIds = formData.getAll("destinationIds").map(String).filter(Boolean);
-  const slug = await uniqueSlug(parsed.data.slug || parsed.data.title, "tour", id);
-  const data = {
-    ...parsed.data,
-    slug,
-    gallery: JSON.stringify(gallery),
-    featured: formData.get("featured") === "on",
-    published: formData.get("published") === "on",
-  };
-
-  if (id) {
-    await db.tour.update({
-      where: { id },
-      data: { ...data, destinations: { set: destinationIds.map((d) => ({ id: d })) } },
-    });
-  } else {
-    await db.tour.create({ data: { ...data, destinations: { connect: destinationIds.map((d) => ({ id: d })) } } });
-  }
+  const ids = formData.getAll("destinationIds").map(String).filter(Boolean);
+  const found = await updateContent((c) => {
+    const now = new Date();
+    const data = {
+      ...parsed.data,
+      slug: uniqueSlug(parsed.data.slug || parsed.data.title, c.tours, id),
+      gallery,
+      destinationIds: c.destinations.filter((d) => ids.includes(d.id)).map((d) => d.id),
+      featured: formData.get("featured") === "on",
+      published: formData.get("published") === "on",
+      updatedAt: now,
+    };
+    if (!id) {
+      c.tours.push({ ...data, id: newId(), createdAt: now });
+      return true;
+    }
+    const index = c.tours.findIndex((t) => t.id === id);
+    if (index === -1) return false;
+    c.tours[index] = { ...c.tours[index], ...data };
+    return true;
+  });
+  if (!found) return { error: "This tour no longer exists." };
   refreshSite();
   redirect("/admin/tours?saved=1");
 }
 
 export async function deleteTour(formData: FormData) {
   await requireAdmin();
-  await db.tour.delete({ where: { id: String(formData.get("id")) } });
+  const id = String(formData.get("id"));
+  await updateContent((c) => {
+    c.tours = c.tours.filter((t) => t.id !== id);
+  });
   refreshSite();
   redirect("/admin/tours");
 }
@@ -194,8 +183,13 @@ export async function toggleTour(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
   const field = formData.get("field") === "featured" ? "featured" : "published";
-  const tour = await db.tour.findUnique({ where: { id } });
-  if (tour) await db.tour.update({ where: { id }, data: { [field]: !tour[field] } });
+  await updateContent((c) => {
+    const tour = c.tours.find((t) => t.id === id);
+    if (tour) {
+      tour[field] = !tour[field];
+      tour.updatedAt = new Date();
+    }
+  });
   refreshSite();
 }
 
@@ -219,39 +213,37 @@ export async function saveDestination(_prev: FormState, formData: FormData): Pro
   const parsed = destinationSchema.safeParse(formObject(formData));
   if (!parsed.success) return { error: firstError(parsed.error) };
 
-  const slug = await uniqueSlug(parsed.data.slug || parsed.data.name, "destination", id);
-  const data = { ...parsed.data, slug, published: formData.get("published") === "on" };
-  if (id) await db.destination.update({ where: { id }, data });
-  else await db.destination.create({ data });
+  const found = await updateContent((c) => {
+    const now = new Date();
+    const data = {
+      ...parsed.data,
+      slug: uniqueSlug(parsed.data.slug || parsed.data.name, c.destinations, id),
+      published: formData.get("published") === "on",
+      updatedAt: now,
+    };
+    if (!id) {
+      c.destinations.push({ ...data, id: newId(), createdAt: now });
+      return true;
+    }
+    const index = c.destinations.findIndex((d) => d.id === id);
+    if (index === -1) return false;
+    c.destinations[index] = { ...c.destinations[index], ...data };
+    return true;
+  });
+  if (!found) return { error: "This destination no longer exists." };
   refreshSite();
   redirect("/admin/destinations?saved=1");
 }
 
 export async function deleteDestination(formData: FormData) {
   await requireAdmin();
-  await db.destination.delete({ where: { id: String(formData.get("id")) } });
+  const id = String(formData.get("id"));
+  await updateContent((c) => {
+    c.destinations = c.destinations.filter((d) => d.id !== id);
+    for (const t of c.tours) t.destinationIds = t.destinationIds.filter((d) => d !== id);
+  });
   refreshSite();
   redirect("/admin/destinations");
-}
-
-// ───────────────────────────── Enquiries ─────────────────────────────
-
-export async function updateEnquiry(_prev: FormState, formData: FormData): Promise<FormState> {
-  await requireAdmin();
-  const id = String(formData.get("id"));
-  const status = String(formData.get("status"));
-  if (!(status in ENQUIRY_STATUS)) return { error: "Unknown status." };
-  const notes = String(formData.get("notes") ?? "").slice(0, 5000);
-  await db.enquiry.update({ where: { id }, data: { status, notes } });
-  revalidatePath("/admin", "layout");
-  return { success: "Enquiry updated." };
-}
-
-export async function deleteEnquiry(formData: FormData) {
-  await requireAdmin();
-  await db.enquiry.delete({ where: { id: String(formData.get("id")) } });
-  revalidatePath("/admin", "layout");
-  redirect("/admin/enquiries");
 }
 
 // ───────────────────────────── FAQs ─────────────────────────────
@@ -268,15 +260,21 @@ export async function saveFaq(_prev: FormState, formData: FormData): Promise<For
   const parsed = faqSchema.safeParse(formObject(formData));
   if (!parsed.success) return { error: firstError(parsed.error) };
   const data = { ...parsed.data, published: formData.get("published") === "on" };
-  if (id) await db.faq.update({ where: { id }, data });
-  else await db.faq.create({ data });
+  await updateContent((c) => {
+    const index = id ? c.faqs.findIndex((f) => f.id === id) : -1;
+    if (index === -1) c.faqs.push({ ...data, id: newId() });
+    else c.faqs[index] = { ...c.faqs[index], ...data };
+  });
   refreshSite();
   return { success: id ? "FAQ saved." : "FAQ added." };
 }
 
 export async function deleteFaq(formData: FormData) {
   await requireAdmin();
-  await db.faq.delete({ where: { id: String(formData.get("id")) } });
+  const id = String(formData.get("id"));
+  await updateContent((c) => {
+    c.faqs = c.faqs.filter((f) => f.id !== id);
+  });
   refreshSite();
 }
 
@@ -294,7 +292,12 @@ export async function savePage(_prev: FormState, formData: FormData): Promise<Fo
   const parsed = pageSchema.safeParse(formObject(formData));
   if (!parsed.success) return { error: firstError(parsed.error) };
   const { slug, ...data } = parsed.data;
-  await db.page.upsert({ where: { slug }, update: data, create: { slug, ...data } });
+  await updateContent((c) => {
+    const index = c.pages.findIndex((p) => p.slug === slug);
+    const page = { ...data, slug, updatedAt: new Date() };
+    if (index === -1) c.pages.push({ ...page, id: newId() });
+    else c.pages[index] = { ...c.pages[index], ...page };
+  });
   refreshSite();
   return { success: "Page saved and published." };
 }
@@ -333,8 +336,9 @@ export async function saveSettings(_prev: FormState, formData: FormData): Promis
   if (!parsed.success) return { error: firstError(parsed.error) };
   const { heroSlides, ...rest } = parsed.data;
   // The first slide doubles as the site's share image in search results and social previews.
-  const data = { ...rest, heroSlides: JSON.stringify(heroSlides), heroImage: heroSlides[0].src };
-  await db.siteSettings.upsert({ where: { id: 1 }, update: data, create: { id: 1, ...data } });
+  await updateContent((c) => {
+    c.settings = { ...c.settings, ...rest, heroSlides, heroImage: heroSlides[0].src };
+  });
   refreshSite();
   return { success: "Settings saved." };
 }

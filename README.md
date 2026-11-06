@@ -1,44 +1,68 @@
 # Skylantic Holidays — website & admin panel
 
-Travel agency website for Skylantic Holidays, Sri Lanka: wildlife safaris and tours, with an admin panel to manage tours, destinations, enquiries, FAQs, page text and contact details.
+Travel agency website for Skylantic Holidays, Sri Lanka: wildlife safaris and tours, with an admin panel to manage tours, destinations, FAQs, page text and contact details.
 
-**Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Prisma + PostgreSQL · hosted on Netlify (uploads in Netlify Blobs)
+**Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · **no database** — all content lives in [`data/content.json`](data/content.json) · hosted on Render
 
 ---
 
 ## Run it locally
 
-Requires Node.js 20.9 or newer and a PostgreSQL database. The easiest is a free [Neon](https://neon.tech) project: create a separate `dev` branch for local work so you never touch live data.
+Requires Node.js 20.9 or newer.
 
 ```bash
 npm install
-cp .env.example .env       # set DATABASE_URL / DIRECT_URL to a Postgres database
-npx prisma migrate deploy  # creates the tables
-npm run db:seed            # admin user + starter content
+cp .env.example .env       # set SESSION_SECRET
 npm run dev                # http://localhost:3000
 ```
 
-Admin panel: <http://localhost:3000/admin> — sign in with `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env`. Change the password under **Account** after the first login.
-
-If npm blocks Prisma's install scripts (npm 11+), approve them once:
+Admin panel: <http://localhost:3000/admin>. The username and password are hard-coded in [`src/lib/admin-credentials.ts`](src/lib/admin-credentials.ts) (only a bcrypt hash of the password is stored). To change the password:
 
 ```bash
-npm install-scripts approve prisma @prisma/engines @prisma/client esbuild
-npm rebuild
+node -e "console.log(require('bcryptjs').hashSync('YOUR-NEW-PASSWORD', 12))"
 ```
 
-## Environment variables (`.env`)
+Paste the output into `ADMIN_PASSWORD_HASH`, commit and push.
+
+## Content: `data/content.json`
+
+One JSON file holds everything the site shows: `settings` (contact details, hero text and slides), `destinations`, `tours`, `faqs` and `pages`. Tours link to parks through `destinationIds`.
+
+- **Locally**, the admin panel edits `data/content.json` directly, so you can make changes in the admin, then commit and push them.
+- **On Render**, the committed file is copied to the persistent disk on first start (`$DATA_DIR/content.json`) and the admin edits that copy. Later pushes **do not overwrite** content edited on the live site. To replace live content with the committed file, delete `/var/data/content.json` from the Render *Shell* tab and restart.
+
+## Enquiries
+
+There's no database to store enquiries. The enquiry forms on the Contact and tour pages build a message with the visitor's details and open **WhatsApp** or their **email app**, addressed to the WhatsApp number and email set in **Site settings**. If neither is set, the form shows "Online enquiries are being set up".
+
+## Environment variables
 
 | Variable | Purpose |
 | --- | --- |
-| `DATABASE_URL` | Pooled Postgres connection used by the app (add `pgbouncer=true` when it goes through a pooler). |
-| `DIRECT_URL` | Direct Postgres connection used for migrations. Locally can equal `DATABASE_URL`. |
 | `SESSION_SECRET` | Random string (32+ chars) used to sign admin logins. |
 | `NEXT_PUBLIC_SITE_URL` | Live domain, e.g. `https://www.skylantic.lk`. Used for SEO tags, sitemap and canonical URLs. |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | First admin account, created by `npm run db:seed`. |
-| `UPLOAD_DIR` | Local dev only: folder for uploaded photos (default `./storage/uploads`). On Netlify photos go to Netlify Blobs automatically. |
+| `DATA_DIR` | Folder holding `content.json` (default `./data`). `/var/data` on Render. |
+| `UPLOAD_DIR` | Folder for uploaded photos (default `./storage/uploads`). `/var/data/uploads` on Render. |
 
 Generate a secret: `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`
+
+## Deploying to Render
+
+[`render.yaml`](render.yaml) is a Render Blueprint that sets everything up.
+
+1. Push this repo to GitHub.
+2. In Render: **New → Blueprint**, connect the repo and confirm.
+3. When asked, enter `NEXT_PUBLIC_SITE_URL` (e.g. `https://skylantic-web.onrender.com` for now). `SESSION_SECRET` is generated automatically.
+4. Wait for the first deploy, then sign in at `/admin`.
+5. **Custom domain:** *Settings → Custom Domains*, then update `NEXT_PUBLIC_SITE_URL` and redeploy.
+
+**Why it's a web service, not a Render Static Site:** the admin login and saving edits need a server. The Blueprint uses the **Starter** plan with a 1 GB persistent disk (about US$7/month plus US$0.25/GB) so admin edits and uploaded photos survive restarts and deploys. You can set `plan: free` and remove the `disk:` block, but then every admin edit and uploaded photo is lost whenever the service sleeps (after 15 minutes idle), restarts or redeploys. On the free plan, edit content locally and push instead.
+
+### Domain & email
+- Register a domain such as `skylantic.lk` (via LK Domain Registry) or `skylanticholidays.com`.
+- Set `NEXT_PUBLIC_SITE_URL` to the final domain and redeploy.
+- For a business address like `hello@skylantic.lk`, use Google Workspace or Zoho Mail, then enter it under **Site settings**.
+- Submit `https://your-domain/sitemap.xml` to Google Search Console.
 
 ## What's included
 
@@ -47,66 +71,33 @@ Generate a secret: `node -e "console.log(require('crypto').randomBytes(32).toStr
 **SEO:** server-rendered pages, unique titles and descriptions, canonical URLs, Open Graph images, `sitemap.xml`, `robots.txt`, and JSON-LD structured data (TravelAgency, TouristTrip with offers, TouristDestination, FAQPage, BreadcrumbList).
 
 **Admin (`/admin`):**
-- **Dashboard:** new-enquiry count and a launch checklist
-- **Enquiries:** inbox with status (New / Contacted / Confirmed / Closed), internal notes, and one-click reply by email, WhatsApp or phone
+- **Dashboard:** content counts and a launch checklist
 - **Tours:** name, type (day / overnight / private / night safari / round tour), parks covered, duration, price and currency (per person / group / jeep), max group size, highlights, included / excluded, itinerary, cover photo, gallery, YouTube/Vimeo video, featured / published, SEO fields
-- **Destinations, FAQs, Pages** (About, Why us, Terms, Privacy), **Site settings** (contact details, social links, credentials, hero text and photo), **Account** (change password)
+- **Destinations, FAQs, Pages** (About, Why us, Terms, Privacy), **Site settings** (contact details, social links, credentials, hero text and photos)
 
 Saving in the admin updates the live site immediately.
 
-## Deploying to Netlify
-
-The repo is ready for Netlify: [`netlify.toml`](netlify.toml) runs database migrations, seeds starter content on the first deploy, and builds the site. Uploaded photos are stored in **Netlify Blobs** (no setup needed).
-
-1. **Create the database.** Make a free project at [neon.tech](https://neon.tech) (or add the *Neon / Netlify DB* extension in Netlify). From the Neon *Connect* dialog copy:
-   - the **pooled** connection string → `DATABASE_URL`, and add `&pgbouncer=true` to the end
-   - the **direct** (non-pooled) connection string → `DIRECT_URL`
-2. **Create the site.** Push this repo to GitHub, then in Netlify: *Add new site → Import an existing project* → pick the repo. Build settings are read from `netlify.toml`.
-3. **Set environment variables** (*Site configuration → Environment variables*):
-
-   | Variable | Value |
-   | --- | --- |
-   | `DATABASE_URL` | pooled URL from step 1 (with `pgbouncer=true`) |
-   | `DIRECT_URL` | direct URL from step 1 |
-   | `SESSION_SECRET` | output of the generate command above |
-   | `NEXT_PUBLIC_SITE_URL` | `https://<your-site>.netlify.app` for now, your domain later |
-   | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first admin login (8+ chars) |
-
-4. **Deploy.** The first build creates the tables, the admin account and the starter tours/pages.
-5. **After the first deploy:** sign in at `/admin`, change the password under **Account**, then **delete `ADMIN_EMAIL` and `ADMIN_PASSWORD`** from Netlify so seeding stops running on later builds.
-6. **Custom domain:** *Domain management → Add a domain*, then update `NEXT_PUBLIC_SITE_URL` and redeploy.
-
-Changing `NEXT_PUBLIC_SITE_URL` always needs a redeploy (*Deploys → Trigger deploy*), because it's built into the pages.
-
-To try the Netlify setup locally (including Blobs): `npm i -g netlify-cli`, `netlify link`, `netlify dev`.
-
-### Domain & email
-- Register a domain such as `skylantic.lk` (via LK Domain Registry) or `skylanticholidays.com`.
-- Set `NEXT_PUBLIC_SITE_URL` to the final domain and rebuild.
-- For a business address like `hello@skylantic.lk`, use Google Workspace or Zoho Mail, then enter it under **Site settings**.
-- Submit `https://your-domain/sitemap.xml` to Google Search Console.
-
 ## Before launch
 
-- [ ] Add phone, WhatsApp, email, address and social links in **Site settings**
+- [ ] Add phone, WhatsApp, email, address and social links in **Site settings** (the enquiry forms need WhatsApp or email)
 - [ ] Add SLTDA registration or other credentials in **Site settings → Credentials**
 - [ ] Replace the 6 sample tours with real tours, prices and photos
 - [ ] Have **Terms** and **Privacy** reviewed by a legal adviser
 - [ ] Replace the placeholder photos with your own (then update `/photo-credits`)
-- [ ] Change the admin password
 
 ## Project structure
 
 ```
-prisma/schema.prisma        database models
-prisma/seed.ts              starter content
+data/content.json           all site content (no database)
+render.yaml                 Render Blueprint
 src/app/(site)/             public pages
 src/app/admin/              admin panel (login + (panel) routes, server actions)
 src/app/api/admin/upload/   photo upload endpoint
 src/app/uploads/[name]/     serves uploaded photos
 src/components/             UI components (admin/ for admin-only)
-src/lib/                    data access, auth, helpers
+src/lib/content.ts          reads/writes content.json
+src/lib/admin-credentials.ts  hard-coded admin username + password hash
+src/lib/data.ts             queries used by the public pages
 src/proxy.ts                redirects signed-out users away from /admin
 public/images/              placeholder photography (Wikimedia Commons, see /photo-credits)
 ```
-"# SKY" 

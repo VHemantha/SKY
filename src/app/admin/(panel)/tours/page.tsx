@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff, Pencil, Plus, Star } from "lucide-react";
-import { db } from "@/lib/db";
+import { readContent } from "@/lib/content";
 import { formatPrice, priceBasisLabel, tourTypeLabel } from "@/lib/utils";
 import { toggleTour } from "../../actions";
 import { AdminHeader, Badge, EmptyState, SavedNotice } from "@/components/admin/ui";
@@ -11,10 +11,10 @@ export const metadata: Metadata = { title: "Tours" };
 
 export default async function AdminToursPage({ searchParams }: PageProps<"/admin/tours">) {
   const { saved } = await searchParams;
-  const tours = await db.tour.findMany({
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-    include: { destinations: { select: { name: true } }, _count: { select: { enquiries: true } } },
-  });
+  const content = await readContent();
+  const tours = [...content.tours]
+    .sort((a, b) => a.sortOrder - b.sortOrder || b.createdAt.getTime() - a.createdAt.getTime())
+    .map((t) => ({ ...t, destinations: content.destinations.filter((d) => t.destinationIds.includes(d.id)) }));
 
   return (
     <>
@@ -50,7 +50,6 @@ export default async function AdminToursPage({ searchParams }: PageProps<"/admin
                 </p>
                 <p className="mt-0.5 text-sm text-ink/60">
                   {formatPrice(t.price, t.currency) ? `${formatPrice(t.price, t.currency)} ${priceBasisLabel(t.priceBasis)}` : "Price on request"}
-                  {t._count.enquiries > 0 && ` · ${t._count.enquiries} enquiries`}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-1">

@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
-import { db } from "@/lib/db";
+import { readContent } from "@/lib/content";
 import { AdminHeader, Badge, EmptyState, SavedNotice } from "@/components/admin/ui";
 
 export const metadata: Metadata = { title: "Destinations" };
 
 export default async function AdminDestinationsPage({ searchParams }: PageProps<"/admin/destinations">) {
   const { saved } = await searchParams;
-  const destinations = await db.destination.findMany({
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-    include: { _count: { select: { tours: true } } },
-  });
+  const content = await readContent();
+  const destinations = [...content.destinations]
+    .sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name))
+    .map((d) => ({ ...d, _count: { tours: content.tours.filter((t) => t.destinationIds.includes(d.id)).length } }));
 
   return (
     <>

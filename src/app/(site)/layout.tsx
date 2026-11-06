@@ -6,7 +6,9 @@ import { getSettings } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
 
 // Pages are cached and refreshed hourly; admin saves refresh them immediately.
-export const revalidate = 3600;
+// Content comes from content.json on the server's disk (edited in the admin), which
+// isn't available at build time on Render, so pages render on each request.
+export const dynamic = "force-dynamic";
 
 export default async function SiteLayout({ children }: LayoutProps<"/">) {
   const settings = await getSettings();

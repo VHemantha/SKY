@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Logo } from "./logo";
 import { FacebookIcon, InstagramIcon, TripadvisorIcon } from "./social-icons";
-import type { SiteSettings } from "@prisma/client";
+import type { SiteSettings } from "@/lib/content";
 
 const EXPLORE = [
   { href: "/tours", label: "All tours & safaris" },

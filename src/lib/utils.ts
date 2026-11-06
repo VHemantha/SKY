@@ -27,9 +27,9 @@ export function lines(text: string | null | undefined) {
     .filter(Boolean);
 }
 
-export function parseGallery(json: string | null | undefined): string[] {
+export function parseGallery(input: string[] | string | null | undefined): string[] {
   try {
-    const value = JSON.parse(json || "[]");
+    const value = Array.isArray(input) ? input : JSON.parse(input || "[]");
     return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
   } catch {
     return [];

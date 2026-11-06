@@ -1,0 +1,411 @@
+{
+  "settings": {
+    "siteName": "Skylantic Holidays",
+    "tagline": "Wildlife safaris & tailor-made holidays in Sri Lanka",
+    "heroTitle": "Meet Sri Lanka's wild side",
+    "heroSubtitle": "Leopards in Yala, elephant herds in Minneriya and quiet mornings in Wilpattu — private safaris and holidays with local guides.",
+    "heroImage": "/images/yala-leopard.jpg",
+    "phone": "",
+    "whatsapp": "",
+    "email": "",
+    "address": "",
+    "facebook": "",
+    "instagram": "",
+    "tripadvisor": "",
+    "credentials": "",
+    "heroSlides": []
+  },
+  "destinations": [
+    {
+      "id": "cmw3r5fwo0001c1d499mjob26",
+      "slug": "yala-national-park",
+      "name": "Yala National Park",
+      "region": "Southern & Uva Provinces",
+      "summary": "Sri Lanka's most famous park and one of the best places in the world to see wild leopards, set among dry scrub, rocky outcrops and coastal lagoons.",
+      "description": "Yala is Sri Lanka's best-known national park, stretching along the south-east coast between Tissamaharama and Kataragama. Its open scrub, granite outcrops, lagoons and beaches support one of the highest densities of leopards anywhere.\n\nBesides leopards, Yala is home to Asian elephants, sloth bears, spotted deer, wild buffalo, mugger crocodiles and more than 200 species of birds. Most safaris explore Block 1, the most visited zone; quieter blocks are available for travellers who want fewer jeeps around.",
+      "highlights": "Sri Lankan leopard\nAsian elephant\nSloth bear\nMugger crocodile\nPeacocks, painted storks and bee-eaters",
+      "bestTime": "February to July offers the best sightings as water holes shrink. Block 1 usually closes for a few weeks between September and October each year.",
+      "image": "/images/yala-leopard.jpg",
+      "published": true,
+      "sortOrder": 10,
+      "createdAt": "2026-11-05T16:20:46.921Z",
+      "updatedAt": "2026-11-05T16:20:46.921Z"
+    },
+    {
+      "id": "cmw3r5fwr0002c1d43jge5nn2",
+      "slug": "udawalawe-national-park",
+      "name": "Udawalawe National Park",
+      "region": "Sabaragamuwa & Uva Provinces",
+      "summary": "The most reliable place in Sri Lanka to see wild elephants, with open grasslands around a large reservoir and the Elephant Transit Home next door.",
+      "description": "Udawalawe's open grassland and scrub around the Udawalawe reservoir make wildlife easy to spot. The park is famous for its resident elephant herds, which can be seen year-round, often with young calves.\n\nNext to the park, the Elephant Transit Home cares for orphaned calves before releasing them back into the wild — feeding times are a lovely add-on to a morning safari.",
+      "highlights": "Herds of wild elephants\nWater buffalo\nSpotted deer\nCrested serpent eagle\nElephant Transit Home feeding",
+      "bestTime": "Good all year round. Early morning and late afternoon drives are best for light and activity.",
+      "image": "/images/udawalawe-elephants.jpg",
+      "published": true,
+      "sortOrder": 20,
+      "createdAt": "2026-11-05T16:20:46.924Z",
+      "updatedAt": "2026-11-05T16:20:46.924Z"
+    },
+    {
+      "id": "cmw3r5fwv0003c1d452vjz556",
+      "slug": "wilpattu-national-park",
+      "name": "Wilpattu National Park",
+      "region": "North Western & North Central Provinces",
+      "summary": "Sri Lanka's largest national park — a quiet wilderness of forest and natural lakes (villus) where leopards and sloth bears roam with far fewer jeeps.",
+      "description": "Wilpattu is the largest and one of the oldest national parks in Sri Lanka. Its name means \"land of lakes\" after the dozens of natural sand-rimmed lakes, called villus, scattered through dense forest.\n\nBecause it is larger and less visited than Yala, safaris here feel wild and unhurried. Leopards, sloth bears, elephants and sambar deer are all present, and the birdlife around the villus is excellent.",
+      "highlights": "Leopard\nSloth bear\nSambar and spotted deer\nNatural lakes (villus)\nFar fewer safari jeeps",
+      "bestTime": "February to October, with the dry months from May to September often best for sightings.",
+      "image": "/images/wilpattu-sambar.jpg",
+      "published": true,
+      "sortOrder": 30,
+      "createdAt": "2026-11-05T16:20:46.928Z",
+      "updatedAt": "2026-11-05T16:20:46.928Z"
+    },
+    {
+      "id": "cmw3r5fwz0004c1d4ft73vtw6",
+      "slug": "minneriya-national-park",
+      "name": "Minneriya National Park",
+      "region": "North Central Province",
+      "summary": "Home of \"The Gathering\", when hundreds of elephants come together on the shores of the ancient Minneriya reservoir during the dry season.",
+      "description": "Minneriya lies in Sri Lanka's Cultural Triangle, close to Sigiriya, Dambulla and Polonnaruwa. At its heart is the Minneriya tank, a reservoir built more than 1,500 years ago.\n\nIn the dry season, as water elsewhere disappears, elephants from the surrounding forests move to the grassy shores of the tank — at times hundreds at once. When conditions shift, guides often move the safari to neighbouring Kaudulla or Hurulu Eco Park to follow the herds.",
+      "highlights": "The Elephant Gathering\nLarge elephant herds\nOpen lakeside grassland\nAncient reservoir\nEasy add-on to Sigiriya",
+      "bestTime": "The Gathering usually peaks from July to October, especially August and September.",
+      "image": "/images/minneriya-gathering.jpg",
+      "published": true,
+      "sortOrder": 40,
+      "createdAt": "2026-11-05T16:20:46.931Z",
+      "updatedAt": "2026-11-05T16:20:46.931Z"
+    },
+    {
+      "id": "cmw3r5fx20005c1d408wh7d1w",
+      "slug": "kumana-national-park",
+      "name": "Kumana National Park",
+      "region": "Eastern Province",
+      "summary": "A remote park on the east coast, joined to Yala, famous for its mangrove swamp and huge nesting colonies of water birds.",
+      "description": "Kumana sits on the far south-east coast, bordering Yala but on the other side of the Kumbukkan Oya river. Its lagoons and the Kumana villu mangrove swamp attract thousands of nesting water birds.\n\nKumana also has leopards, elephants and bears, and sees far fewer visitors than Yala — ideal for birdwatchers and travellers looking for a quieter safari near Arugam Bay.",
+      "highlights": "Nesting water birds\nMangrove swamp\nLeopard and elephant\nVery few visitors\nClose to Arugam Bay",
+      "bestTime": "April to July is the main bird-nesting season.",
+      "image": "/images/kumana.jpg",
+      "published": true,
+      "sortOrder": 50,
+      "createdAt": "2026-11-05T16:20:46.934Z",
+      "updatedAt": "2026-11-05T16:20:46.934Z"
+    },
+    {
+      "id": "cmw3r5fx50006c1d4kvw9cn1l",
+      "slug": "bundala-national-park",
+      "name": "Bundala National Park",
+      "region": "Southern Province",
+      "summary": "A coastal wetland and Ramsar site near Hambantota, home to flamingos, migrant shorebirds, crocodiles and elephants.",
+      "description": "Bundala is a mosaic of shallow lagoons, salt pans, dunes and scrub along the south coast. It was Sri Lanka's first Ramsar wetland of international importance.\n\nIt is a paradise for birdwatchers — especially in the northern winter when migratory waders and greater flamingos arrive — and a relaxed half-day safari to combine with Yala.",
+      "highlights": "Greater flamingo (seasonal)\nMigratory shorebirds\nMugger and saltwater crocodiles\nElephants\nCoastal lagoons",
+      "bestTime": "September to March, when migratory birds are present.",
+      "image": "/images/bundala.jpg",
+      "published": true,
+      "sortOrder": 60,
+      "createdAt": "2026-11-05T16:20:46.938Z",
+      "updatedAt": "2026-11-05T16:20:46.938Z"
+    },
+    {
+      "id": "cmw3r5fx80007c1d42ro6eys3",
+      "slug": "horton-plains-national-park",
+      "name": "Horton Plains National Park",
+      "region": "Central Highlands",
+      "summary": "A cool, misty highland plateau with cloud forest, grassland and the dramatic World's End cliff — explored on foot.",
+      "description": "Horton Plains sits at over 2,000 metres in Sri Lanka's central highlands and is part of a UNESCO World Heritage site. Unlike lowland parks, it is explored on a walking trail of about 9 km.\n\nThe loop passes World's End, a sheer cliff with views to the south coast on a clear morning, and Baker's Falls. Sambar deer, endemic birds and unique montane plants make it very different from a jeep safari.",
+      "highlights": "World's End viewpoint\nBaker's Falls\nSambar deer\nEndemic highland birds\nCloud forest walk",
+      "bestTime": "January to March for the clearest mornings. Start early — mist often rolls in by 10 am.",
+      "image": "/images/horton-plains.jpg",
+      "published": true,
+      "sortOrder": 70,
+      "createdAt": "2026-11-05T16:20:46.941Z",
+      "updatedAt": "2026-11-05T16:20:46.941Z"
+    }
+  ],
+  "tours": [
+    {
+      "id": "cmw3r5fxc0008c1d43fpscuvj",
+      "slug": "yala-leopard-safari-full-day",
+      "title": "Yala Leopard Safari — Full Day",
+      "type": "DAY_SAFARI",
+      "summary": "A full day inside Yala from gate opening to closing, giving you the best possible chance of seeing leopards, elephants and sloth bears.",
+      "description": "Spend the whole day in Yala with a private jeep and an experienced driver-tracker. Being inside the park from first light to closing time means you can explore further than half-day jeeps and wait patiently at sightings.\n\nWe stop for a packed breakfast and lunch at a designated rest area by the sea, then continue tracking through the afternoon when animals become active again.",
+      "duration": "Approx. 12 hours",
+      "price": 180,
+      "currency": "USD",
+      "priceBasis": "PER_JEEP",
+      "maxGroupSize": 6,
+      "highlights": "Private jeep for your group only\nInside the park from opening to closing\nPacked breakfast and lunch inside the park\nExperienced local driver-tracker",
+      "included": "Private safari jeep with driver-tracker\nPickup and drop-off in Tissamaharama / Kirinda\nPacked breakfast and lunch\nBottled water",
+      "excluded": "Park entrance tickets (paid at the gate, per person)\nTips for your driver\nPersonal expenses",
+      "itinerary": "5:00 am — Hotel pickup :: We collect you from your hotel in Tissamaharama or Kirinda.\n6:00 am — Enter Yala :: Morning game drive in search of leopards, elephants and bears.\n9:00 am — Breakfast :: Packed breakfast at a rest area inside the park.\n12:00 pm — Lunch by the sea :: Rest during the hottest part of the day.\n2:00 pm — Afternoon game drive :: Animals return to water holes as it cools down.\n6:00 pm — Exit park & drop-off :: Back at your hotel around 6:30 pm.",
+      "coverImage": "/images/yala-leopard.jpg",
+      "gallery": [
+        "/images/yala-jeep.jpg",
+        "/images/yala-jeeps.jpg"
+      ],
+      "videoUrl": null,
+      "featured": true,
+      "published": true,
+      "sortOrder": 10,
+      "metaTitle": null,
+      "metaDescription": null,
+      "destinationIds": [
+        "cmw3r5fwo0001c1d499mjob26"
+      ],
+      "createdAt": "2026-11-05T16:20:46.945Z",
+      "updatedAt": "2026-11-05T16:20:46.945Z"
+    },
+    {
+      "id": "cmw3r5fxg0009c1d4wo36hl1i",
+      "slug": "yala-morning-safari",
+      "title": "Yala Half-Day Morning Safari",
+      "type": "DAY_SAFARI",
+      "summary": "The classic Yala experience: an early-morning game drive when leopards and birds are most active, back in time for a late breakfast.",
+      "description": "Mornings are one of the best times to see wildlife in Yala. We pick you up before dawn so you're at the gate when it opens, then spend the morning exploring with a private jeep and driver.\n\nThis is a great choice if you're short on time or travelling with children.",
+      "duration": "Approx. 5 hours",
+      "price": 95,
+      "currency": "USD",
+      "priceBasis": "PER_JEEP",
+      "maxGroupSize": 6,
+      "highlights": "Be at the gate at opening time\nBest light for photography\nGood option for families",
+      "included": "Private safari jeep with driver-tracker\nHotel pickup and drop-off nearby\nBottled water",
+      "excluded": "Park entrance tickets\nMeals\nTips",
+      "itinerary": "5:00 am — Hotel pickup\n6:00 am — Morning game drive :: Leopards, elephants, crocodiles, birdlife.\n10:30 am — Return to your hotel",
+      "coverImage": "/images/yala-jeep.jpg",
+      "gallery": [
+        "/images/yala-jeeps.jpg"
+      ],
+      "videoUrl": null,
+      "featured": true,
+      "published": true,
+      "sortOrder": 20,
+      "metaTitle": null,
+      "metaDescription": null,
+      "destinationIds": [
+        "cmw3r5fwo0001c1d499mjob26"
+      ],
+      "createdAt": "2026-11-05T16:20:46.948Z",
+      "updatedAt": "2026-11-05T16:20:46.948Z"
+    },
+    {
+      "id": "cmw3r5fxj000ac1d4psle97p3",
+      "slug": "udawalawe-elephant-safari",
+      "title": "Udawalawe Elephant Safari",
+      "type": "DAY_SAFARI",
+      "summary": "Get close to wild elephant herds in the open grasslands of Udawalawe — the most dependable elephant safari in Sri Lanka.",
+      "description": "Udawalawe's open landscape means elephant sightings are almost guaranteed. Watch family herds bathing, feeding and playing with their calves, and look out for buffalo, deer and birds of prey.\n\nAdd a visit to the Elephant Transit Home to see orphaned calves at feeding time.",
+      "duration": "Approx. 4 hours",
+      "price": 70,
+      "currency": "USD",
+      "priceBasis": "PER_JEEP",
+      "maxGroupSize": 6,
+      "highlights": "Wild elephants almost every drive\nOpen landscape, great for photos\nOptional Elephant Transit Home visit",
+      "included": "Private safari jeep with driver\nHotel pickup and drop-off in Udawalawe\nBottled water",
+      "excluded": "Park entrance tickets\nElephant Transit Home ticket\nTips",
+      "itinerary": "6:00 am — Hotel pickup\n6:30 am — Game drive :: Elephant herds around the reservoir.\n10:00 am — Return to hotel",
+      "coverImage": "/images/udawalawe-elephants.jpg",
+      "gallery": [],
+      "videoUrl": null,
+      "featured": true,
+      "published": true,
+      "sortOrder": 30,
+      "metaTitle": null,
+      "metaDescription": null,
+      "destinationIds": [
+        "cmw3r5fwr0002c1d43jge5nn2"
+      ],
+      "createdAt": "2026-11-05T16:20:46.952Z",
+      "updatedAt": "2026-11-05T16:20:46.952Z"
+    },
+    {
+      "id": "cmw3r5fxm000bc1d4pgmda8v0",
+      "slug": "wilpattu-overnight-camping-safari",
+      "title": "Wilpattu Overnight Camping Safari",
+      "type": "OVERNIGHT",
+      "summary": "Two game drives in quiet, wild Wilpattu with a night in a comfortable tented camp on the edge of the park.",
+      "description": "Wilpattu rewards patience. On this overnight safari you'll enjoy an afternoon drive, a night under canvas at a tented camp near the park boundary, and a second drive the next morning.\n\nMeals are freshly cooked at camp, and evenings are spent around the fire listening to the sounds of the jungle.",
+      "duration": "2 days / 1 night",
+      "price": 260,
+      "currency": "USD",
+      "priceBasis": "PER_PERSON",
+      "maxGroupSize": 6,
+      "highlights": "Two game drives in Wilpattu\nNight in a tented camp\nFewer jeeps, wilder experience\nAll meals at camp",
+      "included": "Two safari drives in a private jeep\nOne night tented camp accommodation\nDinner, breakfast and lunch\nNaturalist guide",
+      "excluded": "Park entrance tickets\nTransport to Wilpattu (can be arranged)\nDrinks and tips",
+      "itinerary": "Day 1, 1:00 pm — Arrive at camp :: Check in and lunch.\nDay 1, 2:30 pm — Afternoon game drive :: Search for leopards and sloth bears around the villus.\nDay 1, evening — Camp dinner :: Dinner around the campfire.\nDay 2, 6:00 am — Morning game drive :: Packed breakfast inside the park.\nDay 2, 12:00 pm — Lunch & departure",
+      "coverImage": "/images/wilpattu-sambar.jpg",
+      "gallery": [],
+      "videoUrl": null,
+      "featured": true,
+      "published": true,
+      "sortOrder": 40,
+      "metaTitle": null,
+      "metaDescription": null,
+      "destinationIds": [
+        "cmw3r5fwv0003c1d452vjz556"
+      ],
+      "createdAt": "2026-11-05T16:20:46.955Z",
+      "updatedAt": "2026-11-05T16:20:46.955Z"
+    },
+    {
+      "id": "cmw3r5fxq000cc1d4amy8svb9",
+      "slug": "minneriya-elephant-gathering-private-safari",
+      "title": "Minneriya Elephant Gathering — Private Safari",
+      "type": "PRIVATE",
+      "summary": "An afternoon private safari to see large elephant herds on the shores of the ancient Minneriya reservoir — easy from Sigiriya and Habarana.",
+      "description": "In the dry season Minneriya hosts one of the largest gatherings of Asian elephants in the world. Our drivers keep in touch with each other and will choose Minneriya, Kaudulla or Hurulu on the day — wherever the herds are.\n\nAfternoon light over the reservoir makes this one of the most photogenic safaris in Sri Lanka.",
+      "duration": "Approx. 4 hours",
+      "price": 85,
+      "currency": "USD",
+      "priceBasis": "PER_JEEP",
+      "maxGroupSize": 6,
+      "highlights": "Private jeep for your group\nDriver picks the best park on the day\nEasy pickup from Sigiriya, Habarana or Dambulla",
+      "included": "Private safari jeep with driver\nPickup and drop-off in Sigiriya, Habarana or Dambulla\nBottled water",
+      "excluded": "Park entrance tickets\nTips",
+      "itinerary": "2:00 pm — Hotel pickup\n3:00 pm — Afternoon game drive :: Elephant herds by the reservoir.\n6:30 pm — Return to hotel",
+      "coverImage": "/images/minneriya-gathering.jpg",
+      "gallery": [
+        "/images/sigiriya.jpg"
+      ],
+      "videoUrl": null,
+      "featured": true,
+      "published": true,
+      "sortOrder": 50,
+      "metaTitle": null,
+      "metaDescription": null,
+      "destinationIds": [
+        "cmw3r5fwz0004c1d4ft73vtw6"
+      ],
+      "createdAt": "2026-11-05T16:20:46.958Z",
+      "updatedAt": "2026-11-05T16:20:46.958Z"
+    },
+    {
+      "id": "cmw3r5fxt000dc1d47gdl8lyq",
+      "slug": "sigiriya-night-nature-walk",
+      "title": "Night Nature Walk near Sigiriya",
+      "type": "NIGHT_SAFARI",
+      "summary": "Discover the nocturnal side of Sri Lanka with a naturalist guide — look for slender lorises, owls, nightjars, frogs and civets.",
+      "description": "National parks in Sri Lanka close at dusk, but the forests and village edges around Sigiriya come alive at night. With torches and a naturalist guide, you'll walk quiet trails looking for slender lorises, owls, civets, geckos and frogs.\n\nThe walk is gentle and suitable for most ages.",
+      "duration": "Approx. 2 hours",
+      "price": 30,
+      "currency": "USD",
+      "priceBasis": "PER_PERSON",
+      "maxGroupSize": 8,
+      "highlights": "Slender loris and owls\nExpert naturalist guide\nTorches provided\nSuitable for families",
+      "included": "Naturalist guide\nTorches\nHotel pickup in Sigiriya",
+      "excluded": "Tips",
+      "itinerary": "7:00 pm — Pickup from your hotel\n7:30 pm — Night walk :: Gentle trails outside the protected area.\n9:30 pm — Return to hotel",
+      "coverImage": "/images/sigiriya.jpg",
+      "gallery": [],
+      "videoUrl": null,
+      "featured": false,
+      "published": true,
+      "sortOrder": 60,
+      "metaTitle": null,
+      "metaDescription": null,
+      "destinationIds": [],
+      "createdAt": "2026-11-05T16:20:46.961Z",
+      "updatedAt": "2026-11-05T16:20:46.961Z"
+    }
+  ],
+  "faqs": [
+    {
+      "id": "cmw3r5fxw000ec1d4feku3xia",
+      "question": "What is the best time for a safari in Sri Lanka?",
+      "answer": "It depends on the park. Yala is best from February to July, the Minneriya elephant gathering peaks from July to October, and Udawalawe is good all year. Tell us your dates and we'll suggest the best parks.",
+      "sortOrder": 10,
+      "published": true
+    },
+    {
+      "id": "cmw3r5fxw000fc1d4tuntpq95",
+      "question": "Are park entrance fees included in the price?",
+      "answer": "Unless a tour says otherwise, national park tickets are paid separately at the gate because they are set by the Department of Wildlife Conservation and charged per person. We'll tell you the current cost before you book.",
+      "sortOrder": 20,
+      "published": true
+    },
+    {
+      "id": "cmw3r5fxw000gc1d4ciud6m7z",
+      "question": "Will I definitely see a leopard?",
+      "answer": "Nobody can promise wildlife sightings, but Yala and Wilpattu have some of the highest leopard densities in the world. A full-day safari gives you the best chance.",
+      "sortOrder": 30,
+      "published": true
+    },
+    {
+      "id": "cmw3r5fxw000hc1d4tkihop47",
+      "question": "Do you pick up from hotels?",
+      "answer": "Yes. Pickup and drop-off from hotels near the park are included in our tours. We can also arrange transfers from further away, such as Colombo, Galle or Ella.",
+      "sortOrder": 40,
+      "published": true
+    },
+    {
+      "id": "cmw3r5fxw000ic1d4akpvs7oi",
+      "question": "Is a safari suitable for children?",
+      "answer": "Yes — children love safaris. For young children we recommend a half-day safari. Please tell us their ages so we can bring the right seating.",
+      "sortOrder": 50,
+      "published": true
+    },
+    {
+      "id": "cmw3r5fxx000jc1d49pnt0iqs",
+      "question": "What should I bring?",
+      "answer": "Neutral-coloured clothing, a hat, sunscreen, insect repellent, binoculars, a camera and a light jacket for early mornings. We provide drinking water.",
+      "sortOrder": 60,
+      "published": true
+    },
+    {
+      "id": "cmw3r5fxx000kc1d4ct8ysbkh",
+      "question": "How do I book and pay?",
+      "answer": "Send us an enquiry or message us on WhatsApp. We'll confirm availability and send a quote. A small deposit confirms your booking, with the balance payable on the day.",
+      "sortOrder": 70,
+      "published": true
+    },
+    {
+      "id": "cmw3r5fxx000lc1d4hh8ezwhh",
+      "question": "What is your cancellation policy?",
+      "answer": "Please see our Terms & Conditions for full details. If a park closes or weather prevents a safari, we'll offer another date or a refund for the services we couldn't provide.",
+      "sortOrder": 80,
+      "published": true
+    },
+    {
+      "id": "cmw3r5fxx000mc1d4wqttipb5",
+      "question": "Can you plan a full Sri Lanka holiday?",
+      "answer": "Yes. As well as safaris, we can arrange round tours covering Sigiriya, Kandy, the tea country, Ella and the south coast beaches, with a private driver.",
+      "sortOrder": 90,
+      "published": true
+    }
+  ],
+  "pages": [
+    {
+      "id": "cmw3r5fxz000nc1d4xms358dh",
+      "slug": "about",
+      "title": "About Skylantic Holidays",
+      "body": "Skylantic Holidays is a new Sri Lankan travel company with a simple idea: help visitors experience the island's wild places the way locals love them — with patience, respect and good company.\n\n## Who we are\n\nWe are a small start-up team based in Sri Lanka. We grew up visiting these parks, and we work with experienced drivers, trackers and guides from the communities around them.\n\nBeing new means we're focused on getting every trip right. You'll deal directly with the people planning your safari, and we reply personally to every message.\n\n## What we do\n\n- Day safaris in Yala, Udawalawe, Wilpattu, Minneriya and more\n- Overnight and camping safaris\n- Private safaris for families, couples and photographers\n- Night nature walks with naturalist guides\n- Tailor-made Sri Lanka round tours with a private driver\n\n## Our promise\n\nWe'll always be clear about what's included, what isn't, and what things really cost. We'll never crowd wildlife for a photo, and we'll always put your safety first.",
+      "metaDescription": "Skylantic Holidays is a young Sri Lankan travel company offering wildlife safaris and tailor-made holidays with local guides and honest prices.",
+      "updatedAt": "2026-11-05T16:20:46.968Z"
+    },
+    {
+      "id": "cmw3r5fy2000oc1d45i44n1xf",
+      "slug": "why-choose-us",
+      "title": "Why choose Skylantic",
+      "body": "Choosing who to travel with matters. Here's what you can expect from us.\n\n## Local, experienced guides\n\nOur drivers and trackers live near the parks and know the animals' habits, the tracks and the seasons. They read the signs — alarm calls, fresh tracks — that lead to great sightings.\n\n## Your own private jeep\n\nMost of our safaris use a private jeep for your group only. Stop when you want, stay at a sighting as long as you like, and enjoy the space to take photos.\n\n## Honest, upfront prices\n\nWe spell out exactly what's included before you book. Park tickets, meals, pickups — no surprises at the gate.\n\n## Personal service from a young team\n\nAs a start-up, every guest matters to us. You'll talk directly to the people planning your trip, and we answer every enquiry within 24 hours.\n\n## Respect for wildlife\n\nWe follow park rules, keep a respectful distance and never pressure drivers to chase animals. Responsible safaris protect the wildlife we all come to see.\n\n## Flexible planning\n\nShort on time? Travelling with kids? Want a sunrise drive followed by a beach afternoon? We'll shape the trip around you.",
+      "metaDescription": "Small groups, private jeeps, local guides and transparent prices — here's why travellers choose Skylantic Holidays for Sri Lanka safaris.",
+      "updatedAt": "2026-11-05T16:20:46.971Z"
+    },
+    {
+      "id": "cmw3r5fy6000pc1d4djnbxyxk",
+      "slug": "terms",
+      "title": "Terms & conditions",
+      "body": "These terms apply to all tours and services booked with Skylantic Holidays (\"we\", \"us\"). By making a booking you agree to them. **Please have these terms reviewed by a legal adviser before publishing.**\n\n## 1. Bookings\n\nA booking is confirmed when we send written confirmation (by email or WhatsApp) and, where required, receive your deposit.\n\n## 2. Prices and payment\n\n- Prices are shown \"from\" and may vary by date, group size and season.\n- Unless stated otherwise, national park entrance fees are not included and are payable at the park.\n- A deposit may be required to confirm a booking. The balance is payable on or before the day of the tour.\n\n## 3. Cancellations by you\n\n- More than 7 days before the tour: full refund of any deposit.\n- 2–7 days before the tour: 50% of the deposit is refundable.\n- Less than 48 hours before, or no-show: deposits are non-refundable.\n\n## 4. Changes and cancellations by us\n\nParks can close at short notice because of weather, flooding, wildlife management or government decisions. If we have to cancel, we will offer an alternative date, an alternative park, or a refund for services not provided.\n\n## 5. Wildlife sightings\n\nWildlife is wild. We cannot guarantee sightings of any particular animal, and no refunds are given for animals not seen.\n\n## 6. Safety and conduct\n\nYou must follow the instructions of your driver and guide and all national park rules. Do not stand up in moving vehicles, feed animals or leave the jeep inside the park. We may end a tour without refund if a guest's behaviour puts people or wildlife at risk.\n\n## 7. Liability and insurance\n\nWe recommend all travellers have comprehensive travel insurance. We are not responsible for loss, injury or delay caused by events beyond our reasonable control.\n\n## 8. Contact\n\nQuestions about these terms? Contact us using the details on our Contact page.",
+      "metaDescription": "Booking terms and conditions for Skylantic Holidays Sri Lanka tours and safaris.",
+      "updatedAt": "2026-11-05T16:20:46.974Z"
+    },
+    {
+      "id": "cmw3r5fy9000qc1d4toakq39s",
+      "slug": "privacy",
+      "title": "Privacy policy",
+      "body": "Your privacy matters to us. This policy explains what information we collect and how we use it. **Please have this policy reviewed by a legal adviser before publishing.**\n\n## Information we collect\n\nWhen you send an enquiry we collect the details you provide: your name, email address, phone number, country, travel dates, number of travellers and your message.\n\n## How we use it\n\n- To reply to your enquiry and plan your trip\n- To arrange your tour with our drivers and guides\n- To meet legal and accounting obligations\n\nWe do not sell your personal information, and we do not send marketing emails without your permission.\n\n## Sharing\n\nWe share only the information needed to deliver your tour (for example, your name and pickup location with your driver).\n\n## How long we keep it\n\nWe keep enquiry and booking records only as long as needed for the purposes above and for our legal obligations.\n\n## Cookies\n\nThis website uses only essential cookies, such as those needed to sign in to the admin area. We do not use advertising cookies.\n\n## Your rights\n\nYou may ask to see, correct or delete the personal information we hold about you, in line with Sri Lanka's Personal Data Protection Act, No. 9 of 2022 and other laws that apply to you. Contact us using the details on our Contact page.\n\n## Changes\n\nWe may update this policy from time to time. The latest version will always be on this page.",
+      "metaDescription": "How Skylantic Holidays collects, uses and protects your personal information.",
+      "updatedAt": "2026-11-05T16:20:46.977Z"
+    }
+  ]
+}

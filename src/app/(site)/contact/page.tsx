@@ -69,7 +69,7 @@ export default async function ContactPage() {
           <div className="rounded-3xl bg-white p-6 shadow-xl shadow-jungle-900/5 ring-1 ring-sand-200 sm:p-10">
             <h2 className="font-display text-3xl font-semibold text-jungle-950">Send an enquiry</h2>
             <p className="mt-2 mb-8 text-sm text-ink/60">Fields marked * are required.</p>
-            <EnquiryForm />
+            <EnquiryForm whatsapp={s.whatsapp} email={s.email} />
           </div>
         </div>
       </section>

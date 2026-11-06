@@ -1,0 +1,37 @@
+# Render Blueprint for Skylantic Holidays.
+# Render → New → Blueprint → pick this repo. Everything below is created automatically.
+#
+# No database: content lives in data/content.json. On first start it's copied to the
+# persistent disk (/var/data), and admin edits + uploaded photos are saved there.
+services:
+  - type: web
+    name: skylantic-web
+    runtime: node
+    # A persistent disk needs a paid instance ("starter" or above).
+    # On "free", the site still works, but admin edits and uploaded photos are
+    # LOST whenever the service restarts, sleeps or redeploys.
+    plan: starter
+    region: singapore # closest Render region to Sri Lanka
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    autoDeploy: true
+    disk:
+      name: skylantic-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Where content.json and uploaded photos are stored (the disk above).
+      - key: DATA_DIR
+        value: /var/data
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      # Signs admin login cookies. Render generates a random value.
+      - key: SESSION_SECRET
+        generateValue: true
+      # Your live URL, e.g. https://skylantic-web.onrender.com or https://www.skylantic.lk
+      # Render asks for it when the Blueprint is created.
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false

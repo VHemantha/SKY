@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ExternalLink, LogOut } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
-import { db } from "@/lib/db";
 import { Logo } from "@/components/logo";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { logout } from "../actions";
@@ -14,7 +13,6 @@ export const metadata: Metadata = {
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const session = await requireAdmin();
-  const newEnquiries = await db.enquiry.count({ where: { status: "NEW" } });
 
   return (
     <div className="flex min-h-svh flex-col bg-sand-50 lg:flex-row">
@@ -23,11 +21,11 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           <Logo light />
         </div>
         <div className="px-3 pb-3 lg:flex-1">
-          <AdminNav newEnquiries={newEnquiries} />
+          <AdminNav />
         </div>
         <div className="hidden border-t border-white/10 p-4 text-sm lg:block">
           <p className="truncate text-white/80">{session.name}</p>
-          <p className="truncate text-xs text-white/50">{session.email}</p>
+          <p className="truncate text-xs text-white/50">{session.username}</p>
           <div className="mt-3 flex gap-2">
             <Link href="/" target="_blank" className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-white/70 hover:bg-white/10 hover:text-white">
               <ExternalLink className="h-3.5 w-3.5" aria-hidden /> View site

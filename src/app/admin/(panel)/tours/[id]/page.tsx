@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ExternalLink, Trash2 } from "lucide-react";
-import { db } from "@/lib/db";
+import { readContent } from "@/lib/content";
 import { deleteTour } from "../../../actions";
 import { AdminHeader } from "@/components/admin/ui";
 import { ConfirmForm } from "@/components/admin/action-form";
@@ -12,10 +12,11 @@ export const metadata: Metadata = { title: "Edit tour" };
 
 export default async function EditTourPage({ params }: PageProps<"/admin/tours/[id]">) {
   const { id } = await params;
-  const [tour, destinations] = await Promise.all([
-    db.tour.findUnique({ where: { id }, include: { destinations: { select: { id: true } } } }),
-    db.destination.findMany({ select: { id: true, name: true }, orderBy: { sortOrder: "asc" } }),
-  ]);
+  const content = await readContent();
+  const tour = content.tours.find((t) => t.id === id);
+  const destinations = [...content.destinations]
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map(({ id, name }) => ({ id, name }));
   if (!tour) notFound();
 
   return (

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Check, Clock, MapPin, Tag, Users, X } from "lucide-react";
 import { EnquiryForm } from "@/components/enquiry-form";
 import { JsonLd } from "@/components/json-ld";
-import { getPublishedTours, getSettings, getTourBySlug } from "@/lib/data";
+import { getSettings, getTourBySlug } from "@/lib/data";
 import {
   formatPrice,
   lines,
@@ -17,11 +17,6 @@ import {
   videoEmbedUrl,
   whatsappLink,
 } from "@/lib/utils";
-
-export async function generateStaticParams() {
-  const tours = await getPublishedTours();
-  return tours.map((t) => ({ slug: t.slug }));
-}
 
 export async function generateMetadata({ params }: PageProps<"/tours/[slug]">): Promise<Metadata> {
   const { slug } = await params;
@@ -210,7 +205,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
             {price && <p className="text-sm text-ink/60">{priceBasisLabel(tour.priceBasis)}</p>}
             <hr className="my-6 border-sand-200" />
             <h2 className="mb-4 text-lg font-semibold text-jungle-950">Check availability</h2>
-            <EnquiryForm tourId={tour.id} compact />
+            <EnquiryForm tourTitle={tour.title} whatsapp={settings.whatsapp} email={settings.email} compact />
             {wa && (
               <a href={wa} target="_blank" rel="noopener noreferrer" className="btn mt-4 w-full border border-[#25D366] text-[#128C7E] hover:bg-[#25D366]/10">
                 Ask on WhatsApp

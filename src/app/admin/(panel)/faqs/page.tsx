@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Trash2 } from "lucide-react";
-import { db } from "@/lib/db";
+import { readContent } from "@/lib/content";
 import { deleteFaq, saveFaq } from "../../actions";
 import { ActionForm, ConfirmForm } from "@/components/admin/action-form";
 import { AdminHeader, Badge, Card, CardTitle, Input, Textarea, Toggle } from "@/components/admin/ui";
@@ -8,7 +8,7 @@ import { AdminHeader, Badge, Card, CardTitle, Input, Textarea, Toggle } from "@/
 export const metadata: Metadata = { title: "FAQs" };
 
 export default async function FaqsAdminPage() {
-  const faqs = await db.faq.findMany({ orderBy: { sortOrder: "asc" } });
+  const faqs = [...(await readContent()).faqs].sort((a, b) => a.sortOrder - b.sortOrder);
   const nextOrder = (faqs.at(-1)?.sortOrder ?? 0) + 10;
 
   return (

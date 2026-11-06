@@ -43,7 +43,7 @@ export async function POST(request: Request) {
   }
 
   const name = `${randomUUID()}.${ext}`;
-  await saveUpload(name, buf, file.type);
+  await saveUpload(name, buf);
 
   return NextResponse.json({ url: `/uploads/${name}` });
 }

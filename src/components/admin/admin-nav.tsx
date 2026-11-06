@@ -2,21 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, HelpCircle, Inbox, LayoutDashboard, Map, Mountain, Settings, UserCog } from "lucide-react";
+import { FileText, HelpCircle, LayoutDashboard, Map, Mountain, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/admin", label: "Dashboard", Icon: LayoutDashboard, exact: true },
-  { href: "/admin/enquiries", label: "Enquiries", Icon: Inbox },
   { href: "/admin/tours", label: "Tours", Icon: Map },
   { href: "/admin/destinations", label: "Destinations", Icon: Mountain },
   { href: "/admin/faqs", label: "FAQs", Icon: HelpCircle },
   { href: "/admin/pages", label: "Pages", Icon: FileText },
   { href: "/admin/settings", label: "Site settings", Icon: Settings },
-  { href: "/admin/account", label: "Account", Icon: UserCog },
 ];
 
-export function AdminNav({ newEnquiries }: { newEnquiries: number }) {
+export function AdminNav() {
   const pathname = usePathname();
   return (
     <nav aria-label="Admin">
@@ -35,9 +33,6 @@ export function AdminNav({ newEnquiries }: { newEnquiries: number }) {
               >
                 <Icon className="h-4.5 w-4.5 shrink-0" aria-hidden />
                 {label}
-                {href === "/admin/enquiries" && newEnquiries > 0 && (
-                  <span className="ml-auto rounded-full bg-sunset-500 px-2 py-0.5 text-xs font-semibold text-white">{newEnquiries}</span>
-                )}
               </Link>
             </li>
           );

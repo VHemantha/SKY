@@ -14,7 +14,7 @@ function secretKey() {
   return new TextEncoder().encode(secret);
 }
 
-type SessionPayload = { userId: string; email: string; name: string };
+type SessionPayload = { username: string; name: string };
 
 export async function encryptSession(payload: SessionPayload) {
   return new SignJWT(payload)

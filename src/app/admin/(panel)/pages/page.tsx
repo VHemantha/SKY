@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FileText, Pencil } from "lucide-react";
-import { db } from "@/lib/db";
+import { readContent } from "@/lib/content";
 import { PAGE_SLUGS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { AdminHeader } from "@/components/admin/ui";
@@ -9,7 +9,7 @@ import { AdminHeader } from "@/components/admin/ui";
 export const metadata: Metadata = { title: "Pages" };
 
 export default async function PagesAdminPage() {
-  const pages = await db.page.findMany();
+  const { pages } = await readContent();
   return (
     <>
       <AdminHeader title="Pages" description="Edit the text on your About, Why choose us, Terms and Privacy pages." />
